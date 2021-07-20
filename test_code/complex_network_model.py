@@ -9,8 +9,8 @@ class ComplexNetworkModel(object):
     #strict_variables = True
     #strict_relations = True
     
-    def __init__(self,number_of_rddas,number_variables_in_rddas,number_relations_in_rddas, number_clausules_in_node,rddas_path):
-        self.number_of_rddas = number_of_rddas
+    def __init__(self,number_of_rdds,number_variables_in_rddas,number_relations_in_rddas, number_clausules_in_node,rddas_path):
+        self.number_of_rddas = number_of_rdds
         self.number_variables_in_rddas = number_variables_in_rddas
         self.number_relations_in_rddas = number_relations_in_rddas
         self.number_clausules_in_node = number_clausules_in_node

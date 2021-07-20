@@ -23,6 +23,7 @@ for v_file_path in l_directory:
 
 l_rddas = []
 for v_rdda_path in l_directory:
+    # noinspection PyArgumentList
     l_rddas.append(RddaModel(v_path + v_rdda_path))
 #show the rddas created
 #for elemento in l_rddas:
@@ -34,14 +35,14 @@ print ("#############################")
 
 #oRdda = l_rddas[0]
 #oRdda.findAtractorsSAT()
-#print (oRdda.set_of_atractors)
+#print (oRdda.set_of_attractors)
 
 #find atractors for every permutation in each RDDA
 #good place to parallel
 l_local_atractors = []
 v_cont_rdda=1
 for o_rdda in l_rddas:
-    for v_permutacion in product(list('01'), repeat=o_rdda.number_of_v_extern):
+    for v_permutacion in product(list('01'), repeat=o_rdda.n_of_v_extern):
         l_local_atractors.append((v_cont_rdda ,v_permutacion ,RddaModel.findAtractorsSATStatic(o_rdda,''.join(v_permutacion))))
     v_cont_rdda = v_cont_rdda + 1    
 

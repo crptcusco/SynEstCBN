@@ -1,5 +1,5 @@
 def findAtractorsSATGlobal(self):
-        print "RED NUMBER : " + str(self.number_of_rdda)
+        print "RED NUMBER : " + str(self.n_of_rdda)
         #create boolean expresion initial with transition = n
         number_of_transitions = 2
         list_atractors=[]
@@ -14,7 +14,7 @@ def findAtractorsSATGlobal(self):
         if solution.success:
             for j in range(0,number_of_transitions):
                 matriz_respuesta_sat.append([])
-                for i in self.list_of_v_total:
+                for i in self.l_of_v_total:
                     matriz_respuesta_sat[j].append(solution[self.dic_var_cnf[str(i)+"_"+str(j)]])
         else:
             print ("The expression cannot be satisfied")
@@ -29,7 +29,7 @@ def findAtractorsSATGlobal(self):
             #TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
             for j in range(0,number_of_transitions):
                 matriz_aux_sat = []
-                for i in range(0,self.number_of_v_total):
+                for i in range(0, self.n_of_v_total):
                     if matriz_respuesta_sat[j][i] == True:
                         matriz_aux_sat.append("1")
                     else:
@@ -57,10 +57,10 @@ def findAtractorsSATGlobal(self):
                     news_estates_atractor = path_solution[atractor_begin-1:(atractor_begin + atractor_end)]
                     list_atractors = list_atractors + news_estates_atractor
                     #add atractors like list of list
-                    self.set_of_atractors.append(news_estates_atractor)
+                    self.set_of_attractors.append(news_estates_atractor)
                     break
 
-            #print self.set_of_atractors
+            #print self.set_of_attractors
 
             if len(news_estates_atractor) == 0 :
                 number_of_transitions = number_of_transitions * 2
@@ -89,7 +89,7 @@ def findAtractorsSATGlobal(self):
             if solution.success:
                 for j in range(0,number_of_transitions):
                     matriz_respuesta_sat.append([])
-                    for i in self.list_of_v_total:
+                    for i in self.l_of_v_total:
                         matriz_respuesta_sat[j].append(solution[self.dic_var_cnf[str(i)+"_"+str(j)]])
             else:
                 print ("The expression cannot be satisfied")
@@ -104,7 +104,7 @@ def findAtractorsSATGlobal(self):
                 #TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
                 for j in range(0,number_of_transitions):
                     matriz_aux_sat = []
-                    for i in range(0,self.number_of_v_total):
+                    for i in range(0, self.n_of_v_total):
                         if matriz_respuesta_sat[j][i] == True:
                             matriz_aux_sat.append("1")
                         else:
@@ -114,6 +114,64 @@ def findAtractorsSATGlobal(self):
             matriz_respuesta_booleana = matriz_auxliar_sat
             #BLOCK ATRACTORS
             #REPEAT CODE
-        print self.set_of_atractors
+        print self.set_of_attractors
         print ("TODO ESTA OK")
         return list_atractors
+    
+
+        #USSING NETWOKRX LIBRARY PYTHON
+#         o_G = nx.DiGraph()
+#         o_G.add_nodes_from(range(0,len(d_global_rdda_attractor)))
+#         o_G.add_edges_from(l_t_aux_links_two_rddas)
+#         
+#         l_path_all = []
+#         for v_aux_attractor in range(0,len(d_global_rdda_attractor)):
+#             print("LIST OF PATHS OF THE ATRACTOR : " + str(v_aux_attractor))
+#             l_path_all.append(nx.multi_source_dijkstra_path(o_G,[v_aux_attractor]))   
+        
+        #print(nx.is_tree(o_G))
+        #print(nx.is_forest(o_G))
+        #print(o_G.number_of_nodes())
+        
+        #for path in l_path:
+        #        print(path)
+        
+        #creating and show the list of adjacency
+        #l_adjacency = nx.generate_adjlist(o_G)
+        #for v_element in l_adjacency:
+        #    print(v_element)
+
+        #d_paths = list(nx.find_cycle(o_G, orientation='original'))
+        #for key_path,value_path in d_paths.items():
+        #    print(key_path)
+        #    print(value_path)
+        #for path in d_paths:
+        #    print(path)
+        #print(d_paths)
+        
+#         reverse dictironary
+#         d_inv_global_rdda_attractor = {v: k for k, v in d_global_rdda_attractor.items()}
+#         
+#         l_links_two_rddas_aux = []     
+#         fill the adjacency graph
+#         for v_link in l_links_two_rddas:
+#             v_link[0] = d_inv_global_rdda_attractor[v_link[0]]
+#             v_link[1] = d_inv_global_rdda_attractor[v_link[1]]
+#             l_links_two_rddas_aux.append(v_link)
+#         
+#         show the list of links with others values
+#         print("LIST OF UNION BETWEM TWO RDDAs WITH DICTIONARY")
+#         print("FORMAT : RDDA INPUT - ATTRACTOR , RRDA OUTPUT - ATTRACTOR, PERMUTATION, VARIABLE INPUT, VARIABLES OUTPUT SET")
+#         for v_link in l_links_two_rddas:
+#             print(v_link)
+#         print("NUMBER OF LINKS : " + str(len(l_links_two_rddas)))
+        
+        #JOIN THE ATRACTORS WITH THE SYNCRONIZED STATES.
+        
+        ##CREATE ONE DATA STRUCTURE IN PANDAS
+        #panda_df = pd.DataFrame(np.array(l_links_two_rddas), columns=['RI', 'RO', 'PE', 'VI','VO', 'AI', 'AO' ])
+        #print(panda_df)       
+        #panda_df2 = panda_df.groupby(['RI', 'RO','PE']).AO
+        #panda_df2 = panda_df2.to_frame()
+        #print(panda_df2.first())
+        #panda_df_group =  panda_df.groupby(['AI'])

@@ -4,7 +4,7 @@ from satispy.solver import Minisat
 class RddaModel(object):
     def __init__(self, number_of_rdda, list_of_v_intern, list_of_signals=[]):
 
-        #CRATE ATRIBUTES
+        #CREATE ATRIBUTES
         self.number_of_rdda = number_of_rdda
         self.list_of_v_intern = list_of_v_intern        
         self.list_of_signals = list_of_signals
@@ -19,28 +19,23 @@ class RddaModel(object):
         self.number_of_v_total = 0
         self.set_of_atractors=[]
         self.dic_res_var = {}
-#        self.list_acoplament_signals = []
 
         print("RDDA CREATED")
     
     def proccesParameters(self):
-        
-        #Procesesing the input of rdda
+        #procesesing the input of rdda
         for v_signal in self.list_of_signals:
             #print (v_signal.name_variable)
             self.list_of_v_exterm.append(v_signal.name_variable)
         
-        #Update the value of list_variables
+        #update the value of list_variables
         self.list_of_v_total.extend(self.list_of_v_intern.copy()) 
         self.list_of_v_total.extend(self.list_of_v_exterm.copy())
         self.number_of_v_total = len(self.list_of_v_total)
-        
-        #oRdda.show()
-        #print(self.list_of_v_total)
-        #print(self.list_of_v_exterm)
-             
+
     def show(self):
-        print ("################################################################")
+        print("================================================================")
+        print("RDDA DESCRIPTION")
         print ("Name of RDDA : "+ str(self.number_of_rdda))
         print ("List of intern variables : ")
         print (self.list_of_v_intern)
@@ -52,7 +47,7 @@ class RddaModel(object):
         print ("Description of Variables")
         for v_description in self.description_variables:
             v_description.show()
-        print ("################################################################")
+        print("================================================================")
 
     @staticmethod
     def generateBooleanFormulationSatispy(oRDD,number_of_transitions,l_atractors_clausules,l_signal_coupling):
