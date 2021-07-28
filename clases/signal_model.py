@@ -21,8 +21,8 @@ class SignalModel(object):
               + "Network Output : " + str(self.rdda_salida) + "\n"
               + "Variables : " + str(self.l_variaveis_saida) + "\n"
               + "Name Variable : " + str(self.name_variable) + "\n"
-              + "Acoplament Function : " + str(self.acoplament_function) + "\n"
-              + "Trusth Table: " + str(self.true_table))
+              + "Coupling Function : " + str(self.acoplament_function) + "\n"
+              + "Truth Table: " + str(self.true_table))
 
     def process_true_table(self):
         r_true_table = {}

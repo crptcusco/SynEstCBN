@@ -21,7 +21,7 @@ class RedRddasModel(object):
         self.number_exit_variables = number_exit_variables
         self.number_clauses_function = number_clauses_function
         self.list_of_rddas = []
-        #self.generateRDDAs()
+        # self.generateRDDAs()
 
     def show(self):
         print("================================================================")
@@ -33,9 +33,9 @@ class RedRddasModel(object):
         print("Maximum number of exit variables by signal : " + str(self.number_of_rddas))
         print("Maximum number of clauses by function : " + str(self.number_of_rddas))
         print("================================================================")
-        for oRdd in self.list_of_rddas:
+        for o_rdda in self.list_of_rddas:
             # print(oRdd)
-            oRdd.show()
+            o_rdda.show()
 
     def generate_rddas(self, type_network="ALEATORY"):
         # generate the RDDAs variables
@@ -127,6 +127,7 @@ class RedRddasModel(object):
 
         for rdda in self.list_of_rddas:
             rdda.proccesParameters()
+            print("RDDA CREATED")
 
     @staticmethod
     def save_file_pickle(oRedRddasModel, v_path):
@@ -174,7 +175,7 @@ class RedRddasModel(object):
         # number_of_v_intern = 0
         # number_of_v_extern = 0
         # number_of_v_total = 0
-        # set_of_atractors = []
+        # set_of_attractors = []
         # dic_res_var = {}
         #
         # print("lista de rddas")
@@ -578,6 +579,3 @@ class RedRddasModel(object):
         # return list_of_field_attractors
         print("END CALCULATE ATTRACTORS FIELDS")
         print("######################################################")
-
-
-
