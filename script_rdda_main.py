@@ -1,5 +1,5 @@
 from clases.red_rddas_model import RedRddasModel
-import sys
+# import sys
 
 print("PROGRAM TO FIND STABILITY AND SYNCHRONISM IN RDDAs")
 # Receiving the parameters
