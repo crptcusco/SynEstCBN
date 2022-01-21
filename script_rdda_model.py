@@ -13,11 +13,11 @@ oRedRddasModel = RedRddasModel.load_file_pickle(path)
 oRedRddasModel.show()
 
 # generate the diagram of the Network RDDA, show and save graph in .eps format
-oRedRddasModel.graph_topology(path_graph=path_base, save_graph=True, show_graph=False)
+oRedRddasModel.graph_topology(path_graph=path_base, save_graph=True, show_graph=True)
 
 # calculate the Attractors Field
 # find attractor by rdda, calculate the compatibility between attractors and labeled graph montage
-l_supported_attractor_pairs = RedRddasModel.calculate_attractors_fields(oRedRddasModel)
+l_attractors_fields = RedRddasModel.calculate_attractors_fields(oRedRddasModel)
 
 # # find the attractors for every RDDA and Permutation of signal coupling
 # for o_rdda in oRedRddasModel.list_of_rddas:
@@ -31,7 +31,5 @@ l_supported_attractor_pairs = RedRddasModel.calculate_attractors_fields(oRedRdda
 # show the attractor group by permutation
 
 # generate the graph of compatible attractors
-
-
 
 print("END SCRIPT")

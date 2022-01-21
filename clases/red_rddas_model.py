@@ -464,7 +464,7 @@ class RedRddasModel(object):
         for v_signal in l_coupling_signals:
             print(v_signal)
 
-            # generate one list of links for every signal
+        # generate one list of links for every signal
         d_coupling_signal = {}
         for v_signal in l_coupling_signals:
             d_coupling_signal[str(v_signal[0]) + "_" + str(v_signal[1])] = []
@@ -476,23 +476,23 @@ class RedRddasModel(object):
             print(str(v_key) + " : " + str(v_values))
         print("------------------------------------------------------")
 
-        # print("Show the adjacency list in a Graph")
-        # # Using the Networkx Library
-        # oGraph = nx.DiGraph()
-        # for v_key, v_values in d_adjacent_list.items():
-        #     print(str(v_key) + " : " + str(v_values))
-        #     for v_attractor in d_adjacent_list[v_key]:
-        #         oGraph.add_edge(v_key, v_attractor)
-        #
-        # # Drawing the graph
-        # nx.draw_networkx(oGraph, pos=nx.spring_layout(oGraph), with_labels=True, font_weight='normal')
-        # plt.axis('off')
-        # if save_graph:
-        #     plt.savefig(path_graph + 'adjacency_graph.eps', format='eps')
-        # plt.show()
-        # # if (save_graph):
-        # #    plt.savefig(path_graph + 'adjacency_graph.eps', format='eps')
-        # print("------------------------------------------------------")
+        print("Show the adjacency list in a Graph")
+        # Using the Networkx Library
+        o_graph = nx.DiGraph()
+        for v_key, v_values in d_adjacent_list.items():
+            print(str(v_key) + " : " + str(v_values))
+            for v_attractor in d_adjacent_list[v_key]:
+                o_graph.add_edge(v_key, v_attractor)
+
+        # Drawing the graph
+        nx.draw_networkx(o_graph, pos=nx.spring_layout(o_graph), with_labels=True, font_weight='normal')
+        plt.axis('off')
+        if save_graph:
+            plt.savefig(path_graph + 'adjacency_graph.eps', format='eps')
+        plt.show()
+        # if (save_graph):
+        #    plt.savefig(path_graph + 'adjacency_graph.eps', format='eps')
+        print("------------------------------------------------------")
 
         print("BEGIN CALCULATE ATTRACTORS FIELDS")
         # PRINT THE LIST OF ATTRACTORS FIELDS
