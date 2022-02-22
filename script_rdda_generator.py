@@ -2,14 +2,14 @@ from clases.red_rddas_model import RedRddasModel
 
 # PROGRAM TO FIND STABILITY AND SYNCHRONISE IN RDDA
 # Receiving the parameters
-n_of_rddas = 5
+n_of_rddas = 3
 n_of_variables_rdda = 5
 n_of_signals_rdda = 2
 n_exit_variables = 2
 n_clauses_function = 2
 type_network = "ALEATORY"
-# this name have to be unique
-unique_path = "18_07_2020"
+# this name has to be unique
+unique_path = "22_01_2022"
 path = "files/" + unique_path + "_" + str(n_of_rddas) + "_" + str(n_of_variables_rdda) + "_" + str(n_of_signals_rdda) \
        + "_" + str(n_exit_variables) + "_" + str(n_clauses_function)
 

@@ -1,11 +1,17 @@
 import random  # generate random numbers
+import networkx as nx  # library to work with graphs
+import igraph as ig
+import matplotlib.pyplot as plt  # library to make draws
+import matplotlib.colors as mcolors # library who have the list of colors
+import pickle  # library to serialization object
+
+# import json # library to serialization object
+# import xml.etree.ElementTree as ET # library to serialization object
+# from igraph.drawing import cairo
+# from igraph import *  # library to make network graphs
+
 from random import randint  # generate random numbers integers
 from itertools import product  # generate combinations of numbers
-import networkx as nx  # library to work with graphs
-import matplotlib.pyplot as plt  # library to make draws
-import pickle  # Library to Serialization of object
-import json
-import xml.etree.ElementTree as ET
 
 from clases.rdda_model import RddaModel
 from clases.signal_model import SignalModel
@@ -21,7 +27,21 @@ class RedRddasModel(object):
         self.number_exit_variables = number_exit_variables
         self.number_clauses_function = number_clauses_function
         self.list_of_rddas = []
+        self.l_rdda_permutation_attractors = []
+        self.attractor_fields = []
+        self.list_signal_pairs = []
+        self.group_signals_pairs = []
+        self.d_global_rdda_attractor = {}
+        self.d_rdd_color = {}
+        self.rddas_attractors = []
         # self.generateRDDAs()
+
+        # List of color for the graphics
+        self.rdd_color_dict = {}
+        list_colors = list(mcolors.CSS4_COLORS.keys())
+        random.shuffle(list_colors)
+        for i, color in enumerate(list_colors):
+            self.rdd_color_dict[i] = color
 
     def show(self):
         print("================================================================")
@@ -149,49 +169,11 @@ class RedRddasModel(object):
 
     @staticmethod
     def saveInFileXML(oRedRddasModel, v_path):
-        print("file : " + v_path + "pickle saved")
+        pass
 
-    @staticmethod
-    def saveInFileXML(oRedRddasModel, v_path):
-        print("file : " + v_path + "pickle saved")
-        # number_of_rddas = ET.Element('number_of_rddas')
-        # number_of_variables_rdda = ET.Element('number_of_variables_rdda')
-        # number_of_signals_rdda = ET.Element('number_of_signals_rdda')
-        # number_exit_variables = ET.Element('number_exit_variables')
-        # number_clausules_function = ET.Element('number_clausules_function')
-        # list_of_rddas = ET.Element('list_of_rddas')
-
-        # list_of_rddas = ET.SubElement(a, 'b')
-        #
-        # number_of_rdda = number_of_rdda
-        # list_of_v_intern = list_of_v_intern
-        # list_of_signals = list_of_signals
-        # description_variables = []
-        #
-        # list_of_v_exterm = []
-        # list_of_v_total = []
-        # dic_var_cnf = {}
-        #
-        # number_of_v_intern = 0
-        # number_of_v_extern = 0
-        # number_of_v_total = 0
-        # set_of_attractors = []
-        # dic_res_var = {}
-        #
-        # print("lista de rddas")
-        # print(oRedRddasModel.list_of_rddas)
-
-        # a = ET.Element('a')
-        # b = ET.SubElement(a, 'b')
-        # c = ET.SubElement(a, 'c')
-        # d = ET.SubElement(c, 'd')
-        # print(ET.dump(a))
-        # print("file saved")
-
-    def graph_topology(self, save_graph: bool = False, path_graph="", show_graph: bool = False):
-
+    # Graph the topology of the RDDA using Networkx library
+    def graph_topology_networkx(self, save_graph: bool = False, show_graph: bool = False, path_graph=""):
         # Using the Networkx Library
-        print("Show the adjacency list in a Graph")
         o_graph = nx.DiGraph()
         for oRDDA in self.list_of_rddas:
             for oSignal in oRDDA.list_of_signals:
@@ -199,16 +181,309 @@ class RedRddasModel(object):
                 o_graph.add_edge(oSignal.rdda_entrada, oSignal.rdda_salida)
 
         # Drawing the graph
-        nx.draw_networkx(o_graph, pos=nx.circular_layout(o_graph), with_labels=True, font_weight='normal')
+        options = {
+            # Some configurations
+            # 'node_color': ['blue', 'red', 'green'],
+            # "node_color": "black",
+            # 'width': 5,
+
+            # BASIC CONFIGURATION
+            'node_size': 500,
+            'pos': nx.kamada_kawai_layout(o_graph),
+            'with_labels': True,
+            'font_weight': 'bold',
+            'connectionstyle': 'arc3,rad=0.4',
+
+            # HIGH CONTRAST
+            # "font_size": 36,
+            # "node_size": 3000,
+            # "node_color": "white",
+            # "edgecolors": "black",
+            # "linewidths": 5,
+            # "width": 5,
+        }
+        # nx.draw_networkx(o_graph, pos=nx.kamada_kawai_layout(o_graph), with_labels=True, font_weight='bold',
+        # connectionstyle="arc3,rad=0.4")
+        nx.draw_networkx(o_graph, **options)
+
         plt.axis('off')
         if save_graph:
             plt.savefig(path_graph + '_network_model.eps', format='eps')
         if show_graph:
             plt.show()
-        print("------------------------------------------------------")
+
+    # Graph the topology of the RDDA using igraph library
+    def graph_topology_igraph(self, save_graph: bool = False, show_graph: bool = False, path_graph=""):
+        # Using the Igraph Library
+        # import igraph as ig
+        # import matplotlib.pyplot as plt
+        # path_graph = "oso2.eps"
+
+        print("Show the Topology Graph of the RDDA")
+        # Show the Topology of the RDDA
+        o_graph = ig.Graph(directed=True)
+        o_graph.as_directed()
+
+        # fill the vertices
+        o_graph.add_vertices(list(range(0, self.number_of_rddas)))
+
+        # fill the edges
+        list_edges = []
+        for o_rdd in self.list_of_rddas:
+            for oSignal in o_rdd.list_of_signals:
+                list_edges.append((oSignal.rdda_entrada - 1, oSignal.rdda_salida - 1))
+                # oSignal.show()
+
+        o_graph.add_edges(list_edges)
+        o_graph.degree(mode="in")
+
+        # Add the labels
+        o_graph.vs["rdd"] = range(1, self.number_of_rddas + 1)
+
+        # # Add color for the vertices by rdd
+        # list_rdda_by_attractor = []
+        # for v_key, v_value in self.d_global_rdda_attractor.items():
+        #     list_rdda_by_attractor.append(v_value[0])
+        # o_graph.vs["rdd"] = list_rdda_by_attractor
+
+        # fill the dictionary rdd - color
+        o_graph.vs["color"] = [self.rdd_color_dict[rdd] for rdd in o_graph.vs["rdd"]]
+        # o_graph.vs["color"] = [color_dict[gender] for gender in g.vs["gender"]]
+
+        # Show the Graph
+        layout = o_graph.layout("kk")
+        visual_style = {}
+        visual_style["vertex_color"] = o_graph.vs["color"]
+        # visual_style["vertex_color"] = ["blue", "red", "green"]
+        # visual_style["vertex_color"] = "black"
+        # visual_style["margin"] =[70, 70, 70, 70]
+        # visual_style["bbox"]=(0, 0, 1500, 1500)
+        visual_style["vertex_size"] = 20
+        # visual_style["vertex_color"] = "#1f78b4"
+        visual_style["vertex_label"] = o_graph.vs["rdd"]
+        visual_style["vertex_label_color"] = "white"
+        visual_style["layout"] = layout
+
+        # plot with MatplotLib
+        fig, ax = plt.subplots(dpi=100)
+        ig.plot(o_graph, target=ax, **visual_style)
+        ax.set_xlim(*(-1.5, 1.5))
+        ax.set_ylim(*(-1.5, 1.5))
+        ax.axis('off')
+        # options to generate graph with matplotlib
+        if path_graph != "":
+            plt.savefig(path_graph)
+
+    # Generate the Graph of attractor pairs of the RDDA
+    def graph_attractor_pairs(self):
+        o_graph = ig.Graph(directed=True)
+        o_graph.as_directed()
+
+        # fill the vertices
+        o_graph.add_vertices(list(range(0, len(self.d_global_rdda_attractor))))
+
+        # fill the edges
+        list_edges = []
+        for pair_list in self.list_signal_pairs:
+            list_edges.extend(pair_list)
+        o_graph.add_edges(list_edges)
+        o_graph.degree(mode="in")
+
+        # for key,value in oRedRddasModel.d_global_rdda_attractor.items():
+        #     print(key,":", value)
+        # print(o_graph)
+        # print(oRedRddasModel.d_global_rdda_attractor)
+
+        # # Add the labels
+        o_graph.vs["attractor"] = range(0, len(self.d_global_rdda_attractor))
+
+        # Add color for the vertices by rdd
+        list_rdda_by_attractor = []
+        for v_key, v_value in self.d_global_rdda_attractor.items():
+            list_rdda_by_attractor.append(v_value[0])
+        o_graph.vs["rdd"] = list_rdda_by_attractor
+        # fill the dictionary rdd - color
+        o_graph.vs["color"] = [self.rdd_color_dict[rdd] for rdd in o_graph.vs["rdd"]]
+        # o_graph.vs["color"] = [color_dict[gender] for gender in g.vs["gender"]]
+
+        # Show the Graph
+        layout = o_graph.layout("kk")
+        visual_style = {}
+        visual_style["vertex_color"] = o_graph.vs["color"]
+        # visual_style["vertex_color"] = "black"
+        # visual_style["margin"] =[70, 70, 70, 70]
+        # visual_style["bbox"]=(0, 0, 1500, 1500)
+        visual_style["vertex_size"] = 20
+        # visual_style["vertex_color"] = "#1f78b4"
+        visual_style["vertex_label"] = o_graph.vs["attractor"]
+        visual_style["vertex_label_color"] = "white"
+        visual_style["layout"] = layout
+
+        # plot with MatplotLib
+        fig, ax = plt.subplots(dpi=200)
+        ig.plot(o_graph, target=ax, **visual_style)
+        # ax.set_xlim(*(-1.5, 1.5))
+        # ax.set_ylim(*(-1.5, 1.5))
+        ax.axis('off')
+        # options to generate graph with matplotlib
+        # if path_graph != "":
+        #     plt.savefig(path_graph)
+
+    def graph_attractor_fields(self):
+        # print(self.l_rdda_permutation_attractors)
+        # Functions
+        # def generate_graph_field(attractor_field):
+        #     o_graph = ig.Graph(directed="True")
+        #     o_graph.as_directed()
+        #     # fill the vertices
+        #
+        #     unique_attactors = []
+        #     for element in attractor_field:
+        #         if (element[0] not in unique_attactors):
+        #             unique_attactors.append(element[0])
+        #         if (element[1] not in unique_attactors):
+        #             unique_attactors.append(element[1])
+        #
+        #     # fill the vertices
+        #     o_graph.add_vertices(list(range(0, len(unique_attactors))))
+        #     # fill the edges
+        #     list_edges = []
+        #     dict_vertices = {}
+        #     # fill the dict of vertices
+        #     cont_vertices = 0
+        #     for element in unique_attactors:
+        #         dict_vertices[element] = cont_vertices
+        #         cont_vertices += 1
+        #
+        #     for attractor_pair in attractor_field:
+        #         # print(attractor_pair)
+        #         list_edges.append((dict_vertices[attractor_pair[0]], dict_vertices[attractor_pair[1]]))
+        #
+        #     o_graph.add_edges(list_edges)
+        #     # Select the in-degree
+        #     o_graph.degree(mode="in")
+        #
+        #     # Add color for the vertices by rdd
+        #     list_rdda_by_attractor = []
+        #     for v_key, v_value in self.d_global_rdda_attractor.items():
+        #         list_rdda_by_attractor.append(v_value[0])
+        #     o_graph.vs["rdd"] = list_rdda_by_attractor
+        #     # fill the dictionary rdd - color
+        #     o_graph.vs["color"] = [self.rdd_color_dict[rdd] for rdd in o_graph.vs["rdd"]]
+        #     # o_graph.vs["color"] = [color_dict[gender] for gender in g.vs["gender"]]
+        #
+        #     # Add the labels
+        #     # o_graph.vs["rdd"] = unique_attactors
+        #
+        #     # Show the Graph
+        #     layout = o_graph.layout("kk")
+        #     visual_style = {}
+        #     visual_style["vertex_color"] = o_graph.vs["color"]
+        #     # visual_style["vertex_color"] = ["blue", "red", "green"]
+        #     # visual_style["vertex_color"] = "black"
+        #     # visual_style["margin"] =[70, 70, 70, 70]
+        #     # visual_style["bbox"]=(0, 0, 1500, 1500)
+        #     visual_style["vertex_size"] = 20
+        #     # visual_style["vertex_color"] = "#1f78b4"
+        #     visual_style["vertex_label"] = o_graph.vs["rdd"]
+        #     visual_style["vertex_label_color"] = "white"
+        #     visual_style["title"] = str(attractor_field)
+        #     visual_style["layout"] = layout
+        #
+        #     # plot with MatplotLib
+        #     fig, ax = plt.subplots(dpi=100)
+        #     ig.plot(o_graph, target=ax, **visual_style)
+        #     ax.set_xlim(*(-1.5, 1.5))
+        #     ax.set_ylim(*(-1.5, 1.5))
+        #     ax.axis('off')
+        #     # save graph with matplotlib
+        #     # if path_graph != "":
+        #     #     plt.savefig(path_graph)
+
+        # oRedRddasModel.attractor_fields
+        for attractor_field in self.attractor_fields:
+            # Create Graph for every attractor_field
+            # print(attractor_field)
+            # generate_graph_field(attractor_field)
+            o_graph = ig.Graph(directed="True")
+            o_graph.as_directed()
+            # fill the vertices
+
+            unique_attactors = []
+            for element in attractor_field:
+                if (element[0] not in unique_attactors):
+                    unique_attactors.append(element[0])
+                if (element[1] not in unique_attactors):
+                    unique_attactors.append(element[1])
+
+            # fill the vertices
+            o_graph.add_vertices(list(range(0, len(unique_attactors))))
+            # fill the edges
+            list_edges = []
+            dict_vertices = {}
+            # fill the dict of vertices
+            cont_vertices = 0
+            for element in unique_attactors:
+                dict_vertices[element] = cont_vertices
+                cont_vertices += 1
+
+            for attractor_pair in attractor_field:
+                # print(attractor_pair)
+                list_edges.append((dict_vertices[attractor_pair[0]], dict_vertices[attractor_pair[1]]))
+
+            o_graph.add_edges(list_edges)
+            # Select the in-degree
+            o_graph.degree(mode="in")
+
+            # Add color for the vertices by rdd
+            # list_rdda_by_attractor = []
+            # for v_key, v_value in self.d_global_rdda_attractor.items():
+            #     list_rdda_by_attractor.append(v_value[0])
+            # o_graph.vs["rdd"] = list_rdda_by_attractor
+
+            # Add RDD by attractor
+            # o_graph.vs["rdd"] = range(0,len(self.list_of_rddas))
+
+            # Add RDD by attractor
+            # find the rdda by attractor
+            list_rdda_by_attractor = []
+            for attractor in unique_attactors:
+                list_rdda_by_attractor.append(self.d_global_rdda_attractor[attractor][0])
+            o_graph.vs["rdd"] = list_rdda_by_attractor
+
+            # Add the labels
+            o_graph.vs["attractor"] = unique_attactors
+            # fill the dictionary rdd - color
+            o_graph.vs["color"] = [self.rdd_color_dict[rdd] for rdd in o_graph.vs["rdd"]]
+            # o_graph.vs["color"] = [color_dict[gender] for gender in g.vs["gender"]]
+
+            # Show the Graph
+            layout = o_graph.layout("kk")
+            visual_style = {}
+            visual_style["vertex_color"] = o_graph.vs["color"]
+            # visual_style["vertex_color"] = ["blue", "red", "green"]
+            # visual_style["vertex_color"] = "black"
+            # visual_style["margin"] =[70, 70, 70, 70]
+            # visual_style["bbox"]=(0, 0, 1500, 1500)
+            visual_style["vertex_size"] = 20
+            # visual_style["vertex_color"] = "#1f78b4"
+            visual_style["vertex_label"] = o_graph.vs["attractor"]
+            visual_style["vertex_label_color"] = "white"
+            visual_style["title"] = str(attractor_field)
+            visual_style["layout"] = layout
+
+            # plot with MatplotLib
+            fig, ax = plt.subplots(dpi=100)
+            ig.plot(o_graph, target=ax, **visual_style)
+            ax.set_xlim(*(-1.5, 1.5))
+            ax.set_ylim(*(-1.5, 1.5))
+            ax.axis('off')
+            # save graph with matplotlib
+            # if path_graph != "":
+            #     plt.savefig(path_graph)
 
     @staticmethod
-    def calculate_attractors_fields(oRedRddasModel, save_graph: bool = False, path_graph="", show_graph: bool = False):
+    def calculate_attractors_fields(oRedRddasModel, save_graph: bool = False, path_graph="", iterative_method: bool = False):
         # FORMAT : [field1 , field2, [[rdda1, attractor],[rdda2, attractor], ...], field 4 , ...]
         # list_of_field_attractors = []
 
@@ -217,7 +492,7 @@ class RedRddasModel(object):
 
         print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
         # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
-        l_rdda_permutation_attractors = []
+
 
         # FIND THE ATTRACTORS FOR EACH RDDA
         for oRdda in oRedRddasModel.list_of_rddas:
@@ -226,7 +501,7 @@ class RedRddasModel(object):
             for v_permutation in l_permutation:
                 # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
                 # EST [RDDA Object, permutation,[List of attractors]]
-                l_rdda_permutation_attractors.append([oRdda, ''.join(v_permutation),
+                oRedRddasModel.l_rdda_permutation_attractors.append([oRdda, ''.join(v_permutation),
                                                       RddaModel.findLocalAtractorsSATSatispy(oRdda,
                                                                                              ''.join(v_permutation))])
         print("END CALCULATE ALL LOCAL ATTRACTORS")
@@ -234,7 +509,7 @@ class RedRddasModel(object):
 
         # SHOW ATTRACTORS GROUP BY RDDA AND PERMUTATION
         print("ATTRACTORS GROUP BY RDDA AND PERMUTATION")
-        for element in l_rdda_permutation_attractors:
+        for element in oRedRddasModel.l_rdda_permutation_attractors:
             print("RDDA:", element[0].number_of_rdda, " - Signal:", element[1])
             count_attractor_by_rdda = 1
             for attractor in element[2]:
@@ -248,7 +523,7 @@ class RedRddasModel(object):
         l_rdda_attractors = []
         for oRdda in oRedRddasModel.list_of_rddas:
             l_aux_local_attractors = []
-            for l_local_permutation_attractors in l_rdda_permutation_attractors:
+            for l_local_permutation_attractors in oRedRddasModel.l_rdda_permutation_attractors:
                 if oRdda.number_of_rdda == l_local_permutation_attractors[0].number_of_rdda:
                     l_aux_local_attractors.extend(l_local_permutation_attractors[2])
             # ADD THE ATTRACTORS TO THE LIST
@@ -281,7 +556,7 @@ class RedRddasModel(object):
         v_cont_dict_global = 0
         print("WALK FOR EVERY GROUP OF ATTRACTORS OF THE PERMUTATION OF RDDA")
         print("======================================================")
-        for l_local_permutation_attractors in l_rdda_permutation_attractors:
+        for l_local_permutation_attractors in oRedRddasModel.l_rdda_permutation_attractors:
             print("WALK FOR EVERY ATTRACTOR OF THE PERMUTATION OF RDDA")
             print("======================================================")
             for v_local_attractor in l_local_permutation_attractors[2]:
@@ -351,14 +626,14 @@ class RedRddasModel(object):
                                 v_flag_accept_attractor = False
                             print("------------------------------------------------------")
                             # SAVE THE FIELD ATTRACTOR
-                        # THE FIELD OF ATTRACTOR GONNA HAVE THIS INFORMATION:
-                        # RDDA INPUT
-                        # RRDA OUTPUT
-                        # PERMUTATION
-                        # VARIABLE INPUT
-                        # VARIABLES OUTPUT SET
-                        # ATTRACTOR INPUT
-                        # ATTRACTOR OUTPUT
+                            # THE FIELD OF ATTRACTOR GONNA HAVE THIS INFORMATION:
+                            # RDDA INPUT
+                            # RRDA OUTPUT
+                            # PERMUTATION
+                            # VARIABLE INPUT
+                            # VARIABLES OUTPUT SET
+                            # ATTRACTOR INPUT
+                            # ATTRACTOR OUTPUT
 
                         if v_flag_accept_attractor:
                             l_links_two_rddas.append(
@@ -374,6 +649,7 @@ class RedRddasModel(object):
 
                     # pass to the next letter with cont
                     v_cont_letter_permutation = v_cont_letter_permutation + 1
+        oRedRddasModel.d_global_rdda_attractor = d_global_rdda_attractor
 
         print("======================================================")
         print("LIST OF UNION BETWEEN TWO RDDAs")
@@ -476,106 +752,101 @@ class RedRddasModel(object):
             print(str(v_key) + " : " + str(v_values))
         print("------------------------------------------------------")
 
-        print("Show the adjacency list in a Graph")
-        # Using the Networkx Library
-        o_graph = nx.DiGraph()
-        for v_key, v_values in d_adjacent_list.items():
-            print(str(v_key) + " : " + str(v_values))
-            for v_attractor in d_adjacent_list[v_key]:
-                o_graph.add_edge(v_key, v_attractor)
-
-        # Drawing the graph
-        nx.draw_networkx(o_graph, pos=nx.spring_layout(o_graph), with_labels=True, font_weight='normal')
-        plt.axis('off')
-        if save_graph:
-            plt.savefig(path_graph + 'adjacency_graph.eps', format='eps')
-        plt.show()
-        # if (save_graph):
-        #    plt.savefig(path_graph + 'adjacency_graph.eps', format='eps')
-        print("------------------------------------------------------")
-
+        # ENUMERATE METHOD TO FIND ATTRACTOR FIELDS
         print("BEGIN CALCULATE ATTRACTORS FIELDS")
-        # PRINT THE LIST OF ATTRACTORS FIELDS
+        rddas_attractors = []
+        # print (oRedRddasModel.list_of_rddas)
+        for element in range(0, len(oRedRddasModel.list_of_rddas)):
+            list_attractor_rdda = []
+            for v_key, v_values in d_global_rdda_attractor.items():
+                # print(str(v_key) + " : " + str(v_values))
+                if v_values[0] == element+1:
+                    list_attractor_rdda.append(v_key)
+            rddas_attractors.append(list_attractor_rdda)
+        oRedRddasModel.rddas_attractors = rddas_attractors
+        # Attractors by RDDA
+        print("Attractors by RDDA")
+        print(rddas_attractors)
 
-        #         print("FIND FIELDS OF ATTRACTORS BY EXHAUSTIVE METHOD")
-        #         #exahustive method to fin the attractors field
-        #         #List of paths
-        #         l_path_attractors = []
-        #         for v_signal, l_links in d_acoplament_signal.items():
-        #             print("SIGNAL: " +  v_signal)
-        #             #print(l_links)
-        #             for v_link in l_links:
-        #                 #save the rdda who is visited
-        #                 l_rdda_visited = []
-        #                 v_path = []
-        #                 v_rdda_begin = v_signal.split("_")[0]
-        #                 v_rdda_end = v_signal.split("_")[1]
-        #                 print("added link")
-        #                 #print(v_link)
-        #                 v_path.append(v_link)
-        #                 #add the already rddas visited
-        #                 l_rdda_visited.append(v_rdda_begin)
-        #                 l_rdda_visited.append(v_rdda_end)
-        #                 for v_in_signal, l_in_links in d_acoplament_signal.items():
-        #                     v_rdda_in_begin = v_in_signal.split("_")[0]
-        #                     v_rdda_in_end = v_in_signal.split("_")[1]
-        #                     for v_in_link in l_in_links:
-        #                         if v_rdda_end != v_rdda_in_begin:
-        #                             continue
-        #                         else:
-        #                             if v_rdda_in_end in l_rdda_visited:
-        #                                 continue
-        #                             else:
-        #                                 v_path.append(v_in_link)
-        #                                 v_rdda_begin = v_rdda_in_begin
-        #                                 v_rdda_end = v_rdda_in_end
-        #                                 l_rdda_visited.append(v_rdda_begin)
-        #                                 l_rdda_visited.append(v_rdda_end)
-        #                 #add the path to the list of paths
-        #                 l_path_attractors.append(v_path)
-        #                 print(v_path)
-        #         print("------------------------------------------------------")
+        # Signals coupling
+        print("Coupling Signals between RDDAs")
+        print(l_coupling_signals)
 
-        #         #trying with the simply method
-        #         l_atractor_fields = []
-        #         #listar todos los atractores
-        #         for v_key,v_values in d_global_rdda_attractor.items():
-        #             print(str(v_key) + " : " + str(v_values))
-        #             print(d_adjancency_list[v_key])
-        #             for v_cont_rddas in range(self.rdda):
-        #                 for v_attractor in d_adjancency_list[v_key] :
-        #                     print(v_attractor)
-        #                     print(d_global_rdda_attractor[v_attractor])
+        # Pares Compatibles
+        print("Compatible pairs")
+        print(l_aux_links_two_rddas)
 
-        #         #dictionary of pairs compativel attractors
-        #         for v_signal, l_links in d_acoplament_signal.items():
-        #             print("SIGNAL: " +  v_signal)
-        #             print(l_links)
-        #             for v_link in l_links:
-        #                 print(v_link)
+        # Generate Groups of pairs by Signal
+        print("")
+        group_signals_pairs = []
+        for group in l_coupling_signals:
+            list_pairs = []
+            for pair in l_aux_links_two_rddas:
+                if pair[0] in rddas_attractors[group[0] - 1] and pair[1] in rddas_attractors[group[1] - 1]:
+                    list_pairs.append(pair)
+            group_signals_pairs.append([group, list_pairs])
+            print(group, list_pairs)
+        oRedRddasModel.group_signals_pairs = group_signals_pairs
+        # group_signals_pairs
 
-        # Drawing the grapph diferent layouts
-        # nx.draw(oGraph, with_labels=True, font_weight='bold')
-        # plt.show()
-        # nx.draw_circular(oGraph, with_labels=True, font_weight='bold')
-        # plt.show()
-        # nx.draw_kamada_kawai(oGraph, with_labels=True, font_weight='bold')
-        # plt.show()
-        # nx.draw_planar(oGraph, with_labels=True, font_weight='bold')
-        # plt.show()
-        # nx.draw_random(oGraph, with_labels=True, font_weight='bold')
-        # plt.show()
-        # nx.draw_spectral(oGraph, with_labels=True, font_weight='bold')
-        # plt.show()
-        # nx.draw_spring(oGraph, with_labels=True, font_weight='bold')
-        # plt.show()
-        # nx.draw_shell(oGraph, with_labels=True, font_weight='bold')
-        # plt.show()
+        # Generate a List of signal pairs
+        list_signal_pairs = []
+        for group in group_signals_pairs:
+            list_signal_pairs.append(group[1])
+        print(list_signal_pairs)
+        oRedRddasModel.list_signal_pairs = list_signal_pairs
 
-        # find all the path betwen two vertices
-        # for path in nx.all_simple_paths(oGraph, source=0, target=3):
-        #    print(path)
+        # Enumerate Method
+        def netMapping(pair):
+            elements = list()
+            for i in range(2):
+                for net, rddas_attractor in enumerate(rddas_attractors):
+                    check_net = pair[i] in rddas_attractor
+                    if check_net:
+                        break
+                elements.append(net + 1)
+            return elements
 
-        # return list_of_field_attractors
+        def is_valid(candidate_field):
+            res = True
+            rdda_dict = {}
+            for pair in candidate_field:
+                elements = netMapping(pair)
+                if not (elements[0] in rdda_dict):
+                    rdda_dict[elements[0]] = pair[0]
+                else:
+                    if not rdda_dict[elements[0]] == pair[0]:
+                        return False
+                if not (elements[1] in rdda_dict):
+                    rdda_dict[elements[1]] = pair[1]
+                else:
+                    if not rdda_dict[elements[1]] == pair[1]:
+                        return False
+            return res
+
+        # Calculate the number of combinations
+        cont_combinations = 1
+        for o_signal in list_signal_pairs:
+            cont_combinations = cont_combinations * len(o_signal)
+            # print(len(o_signal))
+        print("Number of combinations")
+        print(cont_combinations)
+
+        # Show Signals coupling to compare with the valid attractor fields
+        print("Coupling Signals between RDDAs")
+        print(l_coupling_signals)
+
+        # Calculate Valid Fields
+        print("Valid Attractors Fields")
+        oRedRddasModel.attractor_fields = []
+        # Cartesian product
+        for field in product(*list_signal_pairs):
+            # print(element)
+            if is_valid(field):
+                oRedRddasModel.attractor_fields.append(field)
+                print(field)
+        print("Number of valid Attractor Fields: " + str(len(oRedRddasModel.attractor_fields)))
+
         print("END CALCULATE ATTRACTORS FIELDS")
         print("######################################################")
+        return oRedRddasModel

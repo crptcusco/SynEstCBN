@@ -4,28 +4,33 @@
 Research of the student Carlos Reynaldo Portocarrero Tovar in the UFABC. 
 The main objective of this program is the search for stability and synchrony in coupled discrete dynamic networks.
 
-#S.O. Version
+# S.O. Version
 Ubuntu 18.04 64 bits
 Ubuntu 20.04 64 bits
 
-#Lenguaje
+# Language
 Python3 - 3.6
 Python3 - 3.8
 
-#install Minisat
+# install Minisat
 sudo apt-get install minisat
 
-#install satispy
+# install satispy
 sudo pip3 install satispy
 
-#install numpy 
+# install Cairo Library to igragh
+sudo apt-get install libcairo2-dev
+
+# install numpy 
 sudo pip3 install numpy
 
-#install networkx
+# install networkx
 sudo pip3 install networkx
 
-#install matplotlib
+# install matplotlib
 sudo pip3 install matplotlib
 
-#HOW TO USE!!!
+
+
+# HOW TO USE!!!
 python3.6 main.py 5 5 2 2

@@ -9,7 +9,7 @@ print("PROGRAM TO FIND STABILITY AND SYNCHRONISM IN RDDAs")
 # n_exit_variables = int(sys.argv[4])
 # n_clauses_function = int(sys.argv[5])
 
-n_of_rddas = 4
+n_of_rddas = 3
 n_of_variables_rdda = 5
 n_of_signals_rdda = 2
 n_exit_variables = 2

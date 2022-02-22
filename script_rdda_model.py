@@ -6,6 +6,7 @@ from clases.red_rddas_model import RedRddasModel
 # path = "files/example_research/rdda_3_5_2_2_2.pickle"
 path = "files/15_07_2020_5_5_2_2_2.pickle"
 # path = "files/18_07_2020_5_5_2_2_2.pickle"
+# path = "files/22_01_2022_3_5_2_2_2.pickle"
 path_base = path[:-7]
 
 print("Reading the file: ", path)
@@ -13,7 +14,7 @@ oRedRddasModel = RedRddasModel.load_file_pickle(path)
 oRedRddasModel.show()
 
 # generate the diagram of the Network RDDA, show and save graph in .eps format
-oRedRddasModel.graph_topology(path_graph=path_base, save_graph=True, show_graph=True)
+# oRedRddasModel.graph_topology(path_graph=path_base, save_graph=True, show_graph=True)
 
 # calculate the Attractors Field
 # find attractor by rdda, calculate the compatibility between attractors and labeled graph montage
