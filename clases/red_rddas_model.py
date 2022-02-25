@@ -4,6 +4,7 @@ import igraph as ig
 import matplotlib.pyplot as plt  # library to make draws
 import matplotlib.colors as mcolors # library who have the list of colors
 import pickle  # library to serialization object
+import ray # Library to paralelization, distribution and scalability
 
 # import json # library to serialization object
 # import xml.etree.ElementTree as ET # library to serialization object
@@ -483,16 +484,10 @@ class RedRddasModel(object):
             #     plt.savefig(path_graph)
 
     @staticmethod
-    def calculate_attractors_fields(oRedRddasModel, save_graph: bool = False, path_graph="", iterative_method: bool = False):
-        # FORMAT : [field1 , field2, [[rdda1, attractor],[rdda2, attractor], ...], field 4 , ...]
-        # list_of_field_attractors = []
-
-        # New form  to calculate the fields of attractors by the form of the network of RDDAs
-        # Process the topology of the network of RDDAs
-
+    @ray.remote
+    def find_attractors_rddas(oRedRddasModel):
         print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
         # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
-
 
         # FIND THE ATTRACTORS FOR EACH RDDA
         for oRdda in oRedRddasModel.list_of_rddas:
@@ -502,10 +497,21 @@ class RedRddasModel(object):
                 # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
                 # EST [RDDA Object, permutation,[List of attractors]]
                 oRedRddasModel.l_rdda_permutation_attractors.append([oRdda, ''.join(v_permutation),
-                                                      RddaModel.findLocalAtractorsSATSatispy(oRdda,
-                                                                                             ''.join(v_permutation))])
+                                                                     RddaModel.findLocalAtractorsSATSatispy(oRdda,
+                                                                                                            ''.join(
+                                                                                                                v_permutation))])
         print("END CALCULATE ALL LOCAL ATTRACTORS")
         print("######################################################")
+        return oRedRddasModel
+
+    @staticmethod
+    @ray.remote
+    def calculate_attractors_fields(oRedRddasModel, save_graph: bool = False, path_graph="", iterative_method: bool = False):
+        # FORMAT : [field1 , field2, [[rdda1, attractor],[rdda2, attractor], ...], field 4 , ...]
+        # list_of_field_attractors = []
+
+        # New form  to calculate the fields of attractors by the form of the network of RDDAs
+        # Process the topology of the network of RDDAs
 
         # SHOW ATTRACTORS GROUP BY RDDA AND PERMUTATION
         print("ATTRACTORS GROUP BY RDDA AND PERMUTATION")
