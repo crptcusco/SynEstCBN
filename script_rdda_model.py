@@ -4,7 +4,7 @@ from clases.red_rddas_model import RedRddasModel
 # from itertools import product  # generate combinations of numbers
 
 # path = "files/example_research/rdda_3_5_2_2_2.pickle"
-path = "files/15_07_2020_5_5_2_2_2.pickle"
+path = "files/bk/15_07_2020_5_5_2_2_2.pickle"
 # path = "files/18_07_2020_5_5_2_2_2.pickle"
 # path = "files/22_01_2022_3_5_2_2_2.pickle"
 path_base = path[:-7]

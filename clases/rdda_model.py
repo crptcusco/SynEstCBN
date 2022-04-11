@@ -2,6 +2,7 @@ from satispy import Variable
 from satispy.solver import Minisat
 from igraph import *  # library to make network graphs
 import matplotlib.pyplot as plt  # library to make draws
+import ray # Library to paralelization, distribution and scalability
 
 class RddaModel:
     def __init__(self, number_of_rdda, list_of_v_intern, list_of_signals=[]):
@@ -420,6 +421,7 @@ class RddaModel:
         return boolean_function
 
     @staticmethod
+    @ray.remote
     def findLocalAtractorsSATSatispy(oRDD, l_signal_coupling):
         def countStateRepeat(estado, path_solution):
             # input type [[],[],...[]]
