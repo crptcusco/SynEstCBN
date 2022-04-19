@@ -1,5 +1,4 @@
 class FieldAttractorModel(object):
-
     def __init__(self, list_rdda_attractor):
         self.list_rdda_attractor = list_rdda_attractor
 
@@ -9,3 +8,4 @@ class FieldAttractorModel(object):
 
     def show_graphic(self):
         print("Graphic of field of attractors")
+        pass
