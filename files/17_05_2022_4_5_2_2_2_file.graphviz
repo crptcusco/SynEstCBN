@@ -1,0 +1,217 @@
+/* Created by igraph 0.9.6 */
+digraph {
+  0 [
+    name=0
+    attractor=0
+    rdd=1
+    color=olive
+  ];
+  1 [
+    name=1
+    attractor=1
+    rdd=1
+    color=olive
+  ];
+  2 [
+    name=2
+    attractor=2
+    rdd=1
+    color=olive
+  ];
+  3 [
+    name=3
+    attractor=3
+    rdd=1
+    color=olive
+  ];
+  4 [
+    name=4
+    attractor=4
+    rdd=1
+    color=olive
+  ];
+  5 [
+    name=5
+    attractor=5
+    rdd=1
+    color=olive
+  ];
+  6 [
+    name=6
+    attractor=6
+    rdd=1
+    color=olive
+  ];
+  7 [
+    name=7
+    attractor=7
+    rdd=1
+    color=olive
+  ];
+  8 [
+    name=8
+    attractor=8
+    rdd=1
+    color=olive
+  ];
+  9 [
+    name=9
+    attractor=9
+    rdd=1
+    color=olive
+  ];
+  10 [
+    name=10
+    attractor=10
+    rdd=1
+    color=olive
+  ];
+  11 [
+    name=11
+    attractor=11
+    rdd=2
+    color=slateblue
+  ];
+  12 [
+    name=12
+    attractor=12
+    rdd=2
+    color=slateblue
+  ];
+  13 [
+    name=13
+    attractor=13
+    rdd=2
+    color=slateblue
+  ];
+  14 [
+    name=14
+    attractor=14
+    rdd=2
+    color=slateblue
+  ];
+  15 [
+    name=15
+    attractor=15
+    rdd=2
+    color=slateblue
+  ];
+  16 [
+    name=16
+    attractor=16
+    rdd=2
+    color=slateblue
+  ];
+  17 [
+    name=17
+    attractor=17
+    rdd=2
+    color=slateblue
+  ];
+  18 [
+    name=18
+    attractor=18
+    rdd=3
+    color=lightblue
+  ];
+  19 [
+    name=19
+    attractor=19
+    rdd=3
+    color=lightblue
+  ];
+  20 [
+    name=20
+    attractor=20
+    rdd=3
+    color=lightblue
+  ];
+  21 [
+    name=21
+    attractor=21
+    rdd=4
+    color=palegoldenrod
+  ];
+  22 [
+    name=22
+    attractor=22
+    rdd=4
+    color=palegoldenrod
+  ];
+  23 [
+    name=23
+    attractor=23
+    rdd=4
+    color=palegoldenrod
+  ];
+
+  0 -> 19;
+  1 -> 19;
+  2 -> 19;
+  3 -> 19;
+  4 -> 19;
+  5 -> 19;
+  6 -> 18;
+  6 -> 20;
+  7 -> 18;
+  7 -> 20;
+  8 -> 18;
+  8 -> 20;
+  9 -> 18;
+  9 -> 20;
+  10 -> 18;
+  10 -> 20;
+  0 -> 14;
+  1 -> 14;
+  2 -> 14;
+  3 -> 14;
+  4 -> 14;
+  5 -> 11;
+  5 -> 12;
+  5 -> 13;
+  5 -> 15;
+  5 -> 16;
+  5 -> 17;
+  6 -> 14;
+  7 -> 14;
+  8 -> 14;
+  9 -> 14;
+  10 -> 11;
+  10 -> 12;
+  10 -> 13;
+  10 -> 15;
+  10 -> 16;
+  10 -> 17;
+  11 -> 21;
+  12 -> 21;
+  13 -> 21;
+  14 -> 21;
+  15 -> 21;
+  16 -> 21;
+  17 -> 22;
+  17 -> 23;
+  18 -> 21;
+  19 -> 21;
+  20 -> 22;
+  20 -> 23;
+  21 -> 3;
+  21 -> 8;
+  22 -> 0;
+  22 -> 1;
+  22 -> 2;
+  22 -> 4;
+  22 -> 5;
+  22 -> 6;
+  22 -> 7;
+  22 -> 9;
+  22 -> 10;
+  23 -> 0;
+  23 -> 1;
+  23 -> 2;
+  23 -> 4;
+  23 -> 5;
+  23 -> 6;
+  23 -> 7;
+  23 -> 9;
+  23 -> 10;
+}
