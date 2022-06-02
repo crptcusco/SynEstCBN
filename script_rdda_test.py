@@ -1,5 +1,5 @@
 from clases.red_rddas_model import RedRddasModel
-import ray
+# import ray
 
 # import gc
 #
