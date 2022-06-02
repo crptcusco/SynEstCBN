@@ -420,9 +420,149 @@ class RddaModel:
             # print(boolean_function)
         return boolean_function
 
+    def findLocalAtractorsSATSatispy(oRDD, l_signal_coupling):
+        def countStateRepeat(estado, path_solution):
+            # input type [[],[],...[]]
+            number_of_times = 0
+            for elemento in path_solution:
+                if elemento == estado:
+                    number_of_times = number_of_times + 1
+            return number_of_times
+
+        # print "BEGIN TO FIND ATTRACTORS"
+        print("RED NUMBER : " + str(oRDD.number_of_rdda) + " PERMUTATION SIGNAL COUPLING: " + l_signal_coupling)
+        # create boolean expresion initial with transition = n
+        oRDD.set_of_attractors = []
+        v_num_transitions = 3
+        l_atractors = []
+        l_atractors_clausules = []
+
+        # REPEAT CODE
+        v_bool_function = oRDD.generateBooleanFormulationSatispy(oRDD, v_num_transitions, l_atractors_clausules,
+                                                                 l_signal_coupling)
+        m_respuesta_sat = []
+        o_solver = Minisat()
+        o_solution = o_solver.solve(v_bool_function)
+
+        # print(oRDD.number_of_v_total)
+        if o_solution.success:
+            for j in range(0, v_num_transitions):
+                m_respuesta_sat.append([])
+                for i in oRDD.list_of_v_total:
+                    # print("TEST")
+                    # print(str(i)+"_"+str(j))
+                    # print(oRDD.dic_var_cnf)
+                    # print("TEST")
+
+                    print(oRDD.dic_var_cnf.keys())
+                    print(oRDD.dic_var_cnf.values())
+                    print(o_solution.varmap)
+                    print(oRDD.dic_var_cnf.get(f'{i}_{j}'))
+                    #print(f"{i}_{j}")
+                    m_respuesta_sat[j].append(o_solution[oRDD.dic_var_cnf[f'{i}_{j}']])
+
+        else:
+            # print(" ")
+            print("The expression cannot be satisfied")
+
+        # BLOCK ATRACTORS
+        m_auxliar_sat = []
+        if (len(m_respuesta_sat) != 0):
+            # TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
+            for j in range(0, v_num_transitions):
+                matriz_aux_sat = []
+                for i in range(0, oRDD.number_of_v_total):
+                    if m_respuesta_sat[j][i] == True:
+                        matriz_aux_sat.append("1")
+                    else:
+                        matriz_aux_sat.append("0")
+                m_auxliar_sat.append(matriz_aux_sat)
+            # m_resp_booleana = m_auxliar_sat
+        m_resp_booleana = m_auxliar_sat
+        # BLOCK ATRACTORS
+        # REPEAT CODE
+
+        while (len(m_resp_booleana) > 0):
+            # print ("path")
+            # print (m_resp_booleana)
+            # print ("path")
+            path_solution = []
+            for path_trasition in m_resp_booleana:
+                path_solution.append(path_trasition)
+
+            # new list of state attractors
+            l_news_estates_atractor = []
+            # check atractors
+            for v_state in path_solution:
+                v_state_count = countStateRepeat(v_state, path_solution)
+                if (v_state_count > 1):
+                    atractor_begin = path_solution.index(v_state) + 1
+                    atractor_end = path_solution[atractor_begin:].index(v_state)
+                    l_news_estates_atractor = path_solution[atractor_begin - 1:(atractor_begin + atractor_end)]
+                    l_atractors = l_atractors + l_news_estates_atractor
+                    # add atractors like list of list
+                    oRDD.set_of_attractors.append(l_news_estates_atractor)
+                    break
+
+            # print oRDD.set_of_attractors
+            if len(l_news_estates_atractor) == 0:
+                # print ("DOBLANDO")
+                v_num_transitions = v_num_transitions * 2
+
+            # TRANFORM LIST OF ATRACTORS TO CLAUSULES
+            for clausule_atractor in l_atractors:
+                clausule_variable = []
+                cont_variable = 0
+                for estate_atractor in clausule_atractor:
+                    if (estate_atractor == "0"):
+                        clausule_variable.append("-" + str(oRDD.list_of_v_total[cont_variable]))
+                    else:
+                        clausule_variable.append(str(oRDD.list_of_v_total[cont_variable]))
+                    cont_variable = cont_variable + 1
+                l_atractors_clausules.append(clausule_variable)
+
+            # print l_atractors_clausules
+            # REPEAT CODE
+            v_bool_function = oRDD.generateBooleanFormulationSatispy(oRDD, v_num_transitions, l_atractors_clausules,
+                                                                     l_signal_coupling)
+            m_respuesta_sat = []
+            o_solver = Minisat()
+            o_solution = o_solver.solve(v_bool_function)
+
+            if o_solution.success:
+                for j in range(0, v_num_transitions):
+                    m_respuesta_sat.append([])
+                    for i in oRDD.list_of_v_total:
+                        m_respuesta_sat[j].append(o_solution[oRDD.dic_var_cnf[f'{i}_{j}']])
+            else:
+                # print(" ")
+                print("The expression cannot be satisfied")
+
+            # BLOCK ATRACTORS
+            m_auxliar_sat = []
+            if (len(m_respuesta_sat) != 0):
+                # TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
+                for j in range(0, v_num_transitions):
+                    matriz_aux_sat = []
+                    for i in range(0, oRDD.number_of_v_total):
+                        if m_respuesta_sat[j][i] == True:
+                            matriz_aux_sat.append("1")
+                        else:
+                            matriz_aux_sat.append("0")
+                    m_auxliar_sat.append(matriz_aux_sat)
+                # m_resp_booleana = m_auxliar_sat
+            m_resp_booleana = m_auxliar_sat
+            # BLOCK ATRACTORS
+            # REPEAT CODE
+
+        # print oRDD.set_of_attractors
+        # print(" ")
+        # print ("END OF FIND ATRACTORS")
+        return oRDD.set_of_attractors
+
     @staticmethod
     @ray.remote
-    def findLocalAtractorsSATSatispy(oRDD, l_signal_coupling):
+    def findLocalAtractorsSATSatispy_ray(oRDD, l_signal_coupling):
         def countStateRepeat(estado, path_solution):
             # input type [[],[],...[]]
             number_of_times = 0

@@ -1,0 +1,617 @@
+/* Created by igraph 0.9.6 */
+digraph {
+  0 [
+    name=0
+    attractor=0
+    rdd=1
+    color=darkslateblue
+  ];
+  1 [
+    name=1
+    attractor=1
+    rdd=1
+    color=darkslateblue
+  ];
+  2 [
+    name=2
+    attractor=2
+    rdd=1
+    color=darkslateblue
+  ];
+  3 [
+    name=3
+    attractor=3
+    rdd=1
+    color=darkslateblue
+  ];
+  4 [
+    name=4
+    attractor=4
+    rdd=2
+    color=orchid
+  ];
+  5 [
+    name=5
+    attractor=5
+    rdd=2
+    color=orchid
+  ];
+  6 [
+    name=6
+    attractor=6
+    rdd=2
+    color=orchid
+  ];
+  7 [
+    name=7
+    attractor=7
+    rdd=2
+    color=orchid
+  ];
+  8 [
+    name=8
+    attractor=8
+    rdd=3
+    color=lemonchiffon
+  ];
+  9 [
+    name=9
+    attractor=9
+    rdd=3
+    color=lemonchiffon
+  ];
+  10 [
+    name=10
+    attractor=10
+    rdd=3
+    color=lemonchiffon
+  ];
+  11 [
+    name=11
+    attractor=11
+    rdd=3
+    color=lemonchiffon
+  ];
+  12 [
+    name=12
+    attractor=12
+    rdd=4
+    color=cadetblue
+  ];
+  13 [
+    name=13
+    attractor=13
+    rdd=4
+    color=cadetblue
+  ];
+  14 [
+    name=14
+    attractor=14
+    rdd=4
+    color=cadetblue
+  ];
+  15 [
+    name=15
+    attractor=15
+    rdd=4
+    color=cadetblue
+  ];
+  16 [
+    name=16
+    attractor=16
+    rdd=4
+    color=cadetblue
+  ];
+  17 [
+    name=17
+    attractor=17
+    rdd=4
+    color=cadetblue
+  ];
+  18 [
+    name=18
+    attractor=18
+    rdd=4
+    color=cadetblue
+  ];
+  19 [
+    name=19
+    attractor=19
+    rdd=4
+    color=cadetblue
+  ];
+  20 [
+    name=20
+    attractor=20
+    rdd=4
+    color=cadetblue
+  ];
+  21 [
+    name=21
+    attractor=21
+    rdd=4
+    color=cadetblue
+  ];
+  22 [
+    name=22
+    attractor=22
+    rdd=4
+    color=cadetblue
+  ];
+  23 [
+    name=23
+    attractor=23
+    rdd=4
+    color=cadetblue
+  ];
+  24 [
+    name=24
+    attractor=24
+    rdd=4
+    color=cadetblue
+  ];
+  25 [
+    name=25
+    attractor=25
+    rdd=5
+    color=dimgray
+  ];
+  26 [
+    name=26
+    attractor=26
+    rdd=5
+    color=dimgray
+  ];
+  27 [
+    name=27
+    attractor=27
+    rdd=5
+    color=dimgray
+  ];
+  28 [
+    name=28
+    attractor=28
+    rdd=6
+    color=orangered
+  ];
+  29 [
+    name=29
+    attractor=29
+    rdd=6
+    color=orangered
+  ];
+  30 [
+    name=30
+    attractor=30
+    rdd=6
+    color=orangered
+  ];
+  31 [
+    name=31
+    attractor=31
+    rdd=6
+    color=orangered
+  ];
+  32 [
+    name=32
+    attractor=32
+    rdd=7
+    color=beige
+  ];
+  33 [
+    name=33
+    attractor=33
+    rdd=7
+    color=beige
+  ];
+  34 [
+    name=34
+    attractor=34
+    rdd=7
+    color=beige
+  ];
+  35 [
+    name=35
+    attractor=35
+    rdd=7
+    color=beige
+  ];
+  36 [
+    name=36
+    attractor=36
+    rdd=7
+    color=beige
+  ];
+  37 [
+    name=37
+    attractor=37
+    rdd=7
+    color=beige
+  ];
+  38 [
+    name=38
+    attractor=38
+    rdd=7
+    color=beige
+  ];
+  39 [
+    name=39
+    attractor=39
+    rdd=7
+    color=beige
+  ];
+  40 [
+    name=40
+    attractor=40
+    rdd=8
+    color=lightcoral
+  ];
+  41 [
+    name=41
+    attractor=41
+    rdd=8
+    color=lightcoral
+  ];
+  42 [
+    name=42
+    attractor=42
+    rdd=8
+    color=lightcoral
+  ];
+  43 [
+    name=43
+    attractor=43
+    rdd=8
+    color=lightcoral
+  ];
+  44 [
+    name=44
+    attractor=44
+    rdd=8
+    color=lightcoral
+  ];
+  45 [
+    name=45
+    attractor=45
+    rdd=9
+    color=mediumslateblue
+  ];
+  46 [
+    name=46
+    attractor=46
+    rdd=9
+    color=mediumslateblue
+  ];
+  47 [
+    name=47
+    attractor=47
+    rdd=9
+    color=mediumslateblue
+  ];
+  48 [
+    name=48
+    attractor=48
+    rdd=9
+    color=mediumslateblue
+  ];
+  49 [
+    name=49
+    attractor=49
+    rdd=9
+    color=mediumslateblue
+  ];
+  50 [
+    name=50
+    attractor=50
+    rdd=9
+    color=mediumslateblue
+  ];
+  51 [
+    name=51
+    attractor=51
+    rdd=9
+    color=mediumslateblue
+  ];
+  52 [
+    name=52
+    attractor=52
+    rdd=9
+    color=mediumslateblue
+  ];
+  53 [
+    name=53
+    attractor=53
+    rdd=9
+    color=mediumslateblue
+  ];
+  54 [
+    name=54
+    attractor=54
+    rdd=9
+    color=mediumslateblue
+  ];
+  55 [
+    name=55
+    attractor=55
+    rdd=9
+    color=mediumslateblue
+  ];
+  56 [
+    name=56
+    attractor=56
+    rdd=9
+    color=mediumslateblue
+  ];
+  57 [
+    name=57
+    attractor=57
+    rdd=9
+    color=mediumslateblue
+  ];
+  58 [
+    name=58
+    attractor=58
+    rdd=9
+    color=mediumslateblue
+  ];
+  59 [
+    name=59
+    attractor=59
+    rdd=9
+    color=mediumslateblue
+  ];
+  60 [
+    name=60
+    attractor=60
+    rdd=10
+    color=lightsteelblue
+  ];
+  61 [
+    name=61
+    attractor=61
+    rdd=10
+    color=lightsteelblue
+  ];
+  62 [
+    name=62
+    attractor=62
+    rdd=10
+    color=lightsteelblue
+  ];
+  63 [
+    name=63
+    attractor=63
+    rdd=10
+    color=lightsteelblue
+  ];
+
+  0 -> 25;
+  1 -> 25;
+  2 -> 25;
+  3 -> 26;
+  3 -> 27;
+  8 -> 0;
+  9 -> 0;
+  10 -> 2;
+  10 -> 3;
+  11 -> 2;
+  11 -> 3;
+  25 -> 4;
+  25 -> 5;
+  26 -> 4;
+  26 -> 5;
+  27 -> 6;
+  27 -> 7;
+  28 -> 25;
+  29 -> 25;
+  30 -> 26;
+  30 -> 27;
+  31 -> 26;
+  31 -> 27;
+  40 -> 9;
+  40 -> 10;
+  41 -> 9;
+  41 -> 10;
+  42 -> 9;
+  42 -> 10;
+  43 -> 9;
+  43 -> 10;
+  44 -> 8;
+  44 -> 11;
+  60 -> 28;
+  60 -> 30;
+  61 -> 28;
+  61 -> 30;
+  62 -> 28;
+  62 -> 30;
+  63 -> 29;
+  63 -> 31;
+  12 -> 9;
+  12 -> 10;
+  13 -> 9;
+  13 -> 10;
+  14 -> 9;
+  14 -> 10;
+  15 -> 9;
+  15 -> 10;
+  16 -> 9;
+  16 -> 10;
+  17 -> 9;
+  17 -> 10;
+  18 -> 9;
+  18 -> 10;
+  19 -> 8;
+  19 -> 11;
+  20 -> 8;
+  20 -> 11;
+  21 -> 8;
+  21 -> 11;
+  22 -> 8;
+  22 -> 11;
+  23 -> 8;
+  23 -> 11;
+  24 -> 8;
+  24 -> 11;
+  45 -> 12;
+  45 -> 14;
+  45 -> 22;
+  45 -> 23;
+  46 -> 12;
+  46 -> 14;
+  46 -> 22;
+  46 -> 23;
+  47 -> 12;
+  47 -> 14;
+  47 -> 22;
+  47 -> 23;
+  48 -> 12;
+  48 -> 14;
+  48 -> 22;
+  48 -> 23;
+  49 -> 12;
+  49 -> 14;
+  49 -> 22;
+  49 -> 23;
+  50 -> 12;
+  50 -> 14;
+  50 -> 22;
+  50 -> 23;
+  51 -> 12;
+  51 -> 14;
+  51 -> 22;
+  51 -> 23;
+  52 -> 12;
+  52 -> 14;
+  52 -> 22;
+  52 -> 23;
+  53 -> 13;
+  53 -> 15;
+  53 -> 16;
+  53 -> 17;
+  53 -> 18;
+  53 -> 19;
+  53 -> 20;
+  53 -> 21;
+  53 -> 24;
+  54 -> 13;
+  54 -> 15;
+  54 -> 16;
+  54 -> 17;
+  54 -> 18;
+  54 -> 19;
+  54 -> 20;
+  54 -> 21;
+  54 -> 24;
+  55 -> 13;
+  55 -> 15;
+  55 -> 16;
+  55 -> 17;
+  55 -> 18;
+  55 -> 19;
+  55 -> 20;
+  55 -> 21;
+  55 -> 24;
+  56 -> 13;
+  56 -> 15;
+  56 -> 16;
+  56 -> 17;
+  56 -> 18;
+  56 -> 19;
+  56 -> 20;
+  56 -> 21;
+  56 -> 24;
+  57 -> 13;
+  57 -> 15;
+  57 -> 16;
+  57 -> 17;
+  57 -> 18;
+  57 -> 19;
+  57 -> 20;
+  57 -> 21;
+  57 -> 24;
+  58 -> 13;
+  58 -> 15;
+  58 -> 16;
+  58 -> 17;
+  58 -> 18;
+  58 -> 19;
+  58 -> 20;
+  58 -> 21;
+  58 -> 24;
+  59 -> 13;
+  59 -> 15;
+  59 -> 16;
+  59 -> 17;
+  59 -> 18;
+  59 -> 19;
+  59 -> 20;
+  59 -> 21;
+  59 -> 24;
+  32 -> 48;
+  32 -> 49;
+  32 -> 54;
+  33 -> 48;
+  33 -> 49;
+  33 -> 54;
+  34 -> 48;
+  34 -> 49;
+  34 -> 54;
+  35 -> 48;
+  35 -> 49;
+  35 -> 54;
+  36 -> 45;
+  36 -> 46;
+  36 -> 47;
+  36 -> 50;
+  36 -> 51;
+  36 -> 52;
+  36 -> 53;
+  36 -> 55;
+  36 -> 56;
+  36 -> 57;
+  36 -> 58;
+  36 -> 59;
+  37 -> 45;
+  37 -> 46;
+  37 -> 47;
+  37 -> 50;
+  37 -> 51;
+  37 -> 52;
+  37 -> 53;
+  37 -> 55;
+  37 -> 56;
+  37 -> 57;
+  37 -> 58;
+  37 -> 59;
+  38 -> 45;
+  38 -> 46;
+  38 -> 47;
+  38 -> 50;
+  38 -> 51;
+  38 -> 52;
+  38 -> 53;
+  38 -> 55;
+  38 -> 56;
+  38 -> 57;
+  38 -> 58;
+  38 -> 59;
+  39 -> 45;
+  39 -> 46;
+  39 -> 47;
+  39 -> 50;
+  39 -> 51;
+  39 -> 52;
+  39 -> 53;
+  39 -> 55;
+  39 -> 56;
+  39 -> 57;
+  39 -> 58;
+  39 -> 59;
+  4 -> 41;
+  5 -> 41;
+  6 -> 41;
+  7 -> 40;
+  7 -> 42;
+  7 -> 43;
+  7 -> 44;
+}

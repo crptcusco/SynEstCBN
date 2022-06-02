@@ -419,9 +419,25 @@ class RedRddasModel(object):
                 print("Index:", attractor_index, "- RDD:", self.d_global_rdda_attractor[attractor_index][0],
                       "- Attractor:", self.d_global_rdda_attractor[attractor_index][1])
 
+    def find_attractors_rddas(oRedRddasModel):
+        print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
+        # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
+
+        # FIND THE ATTRACTORS FOR EACH RDDA
+        for oRdda in oRedRddasModel.list_of_rddas:
+            # GENERATE THE POSSIBLES COMBINATIONS ACCORDING TO THE COUPLING SIGNALS
+            l_permutation = product(list('01'), repeat=len(oRdda.list_of_signals))
+            for v_permutation in l_permutation:
+                # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
+                # EST [RDDA Object, permutation,[List of attractors]]
+                oRedRddasModel.l_rdda_permutation_attractors.append([oRdda, ''.join(v_permutation),RddaModel.findLocalAtractorsSATSatispy(oRdda,''.join(v_permutation))])
+        print("END CALCULATE ALL LOCAL ATTRACTORS")
+        print("######################################################")
+        return oRedRddasModel
+
     @staticmethod
     @ray.remote
-    def find_attractors_rddas(oRedRddasModel):
+    def find_attractors_rddas_ray(oRedRddasModel):
         print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
         # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
 
@@ -889,9 +905,10 @@ class RedRddasModel(object):
             v_cont = v_cont + 1
 
         print("OUPUT", len(l_cartesian_product))
-        for v_element in l_cartesian_product:
-            print(v_element)
+        # Print the elements of cartessian product
+        # for v_element in l_cartesian_product:
+        #     print(v_element)
 
         oRedRddasModel.attractor_fields = l_cartesian_product
-        print(oRedRddasModel.attractor_fields)
+        # print(oRedRddasModel.attractor_fields)
         return oRedRddasModel

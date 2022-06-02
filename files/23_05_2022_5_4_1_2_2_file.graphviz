@@ -1,0 +1,215 @@
+/* Created by igraph 0.9.6 */
+digraph {
+  0 [
+    name=0
+    attractor=0
+    rdd=1
+    color=darkgreen
+  ];
+  1 [
+    name=1
+    attractor=1
+    rdd=1
+    color=darkgreen
+  ];
+  2 [
+    name=2
+    attractor=2
+    rdd=1
+    color=darkgreen
+  ];
+  3 [
+    name=3
+    attractor=3
+    rdd=1
+    color=darkgreen
+  ];
+  4 [
+    name=4
+    attractor=4
+    rdd=1
+    color=darkgreen
+  ];
+  5 [
+    name=5
+    attractor=5
+    rdd=2
+    color=mediumblue
+  ];
+  6 [
+    name=6
+    attractor=6
+    rdd=2
+    color=mediumblue
+  ];
+  7 [
+    name=7
+    attractor=7
+    rdd=2
+    color=mediumblue
+  ];
+  8 [
+    name=8
+    attractor=8
+    rdd=2
+    color=mediumblue
+  ];
+  9 [
+    name=9
+    attractor=9
+    rdd=3
+    color=blueviolet
+  ];
+  10 [
+    name=10
+    attractor=10
+    rdd=3
+    color=blueviolet
+  ];
+  11 [
+    name=11
+    attractor=11
+    rdd=3
+    color=blueviolet
+  ];
+  12 [
+    name=12
+    attractor=12
+    rdd=3
+    color=blueviolet
+  ];
+  13 [
+    name=13
+    attractor=13
+    rdd=3
+    color=blueviolet
+  ];
+  14 [
+    name=14
+    attractor=14
+    rdd=4
+    color=tan
+  ];
+  15 [
+    name=15
+    attractor=15
+    rdd=4
+    color=tan
+  ];
+  16 [
+    name=16
+    attractor=16
+    rdd=4
+    color=tan
+  ];
+  17 [
+    name=17
+    attractor=17
+    rdd=4
+    color=tan
+  ];
+  18 [
+    name=18
+    attractor=18
+    rdd=4
+    color=tan
+  ];
+  19 [
+    name=19
+    attractor=19
+    rdd=4
+    color=tan
+  ];
+  20 [
+    name=20
+    attractor=20
+    rdd=4
+    color=tan
+  ];
+  21 [
+    name=21
+    attractor=21
+    rdd=4
+    color=tan
+  ];
+  22 [
+    name=22
+    attractor=22
+    rdd=4
+    color=tan
+  ];
+  23 [
+    name=23
+    attractor=23
+    rdd=5
+    color=khaki
+  ];
+  24 [
+    name=24
+    attractor=24
+    rdd=5
+    color=khaki
+  ];
+  25 [
+    name=25
+    attractor=25
+    rdd=5
+    color=khaki
+  ];
+
+  0 -> 5;
+  1 -> 5;
+  2 -> 5;
+  3 -> 6;
+  3 -> 7;
+  3 -> 8;
+  4 -> 6;
+  4 -> 7;
+  4 -> 8;
+  5 -> 2;
+  6 -> 2;
+  7 -> 0;
+  7 -> 1;
+  7 -> 3;
+  7 -> 4;
+  8 -> 0;
+  8 -> 1;
+  8 -> 3;
+  8 -> 4;
+  9 -> 2;
+  10 -> 2;
+  11 -> 0;
+  11 -> 1;
+  11 -> 3;
+  11 -> 4;
+  12 -> 0;
+  12 -> 1;
+  12 -> 3;
+  12 -> 4;
+  13 -> 0;
+  13 -> 1;
+  13 -> 3;
+  13 -> 4;
+  14 -> 5;
+  15 -> 5;
+  16 -> 5;
+  17 -> 5;
+  18 -> 5;
+  19 -> 6;
+  19 -> 7;
+  19 -> 8;
+  20 -> 6;
+  20 -> 7;
+  20 -> 8;
+  21 -> 6;
+  21 -> 7;
+  21 -> 8;
+  22 -> 6;
+  22 -> 7;
+  22 -> 8;
+  23 -> 5;
+  24 -> 5;
+  25 -> 6;
+  25 -> 7;
+  25 -> 8;
+}

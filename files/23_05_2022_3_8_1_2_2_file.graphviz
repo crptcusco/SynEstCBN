@@ -1,0 +1,146 @@
+/* Created by igraph 0.9.6 */
+digraph {
+  0 [
+    name=0
+    attractor=0
+    rdd=1
+    color=darkblue
+  ];
+  1 [
+    name=1
+    attractor=1
+    rdd=1
+    color=darkblue
+  ];
+  2 [
+    name=2
+    attractor=2
+    rdd=1
+    color=darkblue
+  ];
+  3 [
+    name=3
+    attractor=3
+    rdd=1
+    color=darkblue
+  ];
+  4 [
+    name=4
+    attractor=4
+    rdd=1
+    color=darkblue
+  ];
+  5 [
+    name=5
+    attractor=5
+    rdd=2
+    color=maroon
+  ];
+  6 [
+    name=6
+    attractor=6
+    rdd=2
+    color=maroon
+  ];
+  7 [
+    name=7
+    attractor=7
+    rdd=2
+    color=maroon
+  ];
+  8 [
+    name=8
+    attractor=8
+    rdd=2
+    color=maroon
+  ];
+  9 [
+    name=9
+    attractor=9
+    rdd=3
+    color=darkmagenta
+  ];
+  10 [
+    name=10
+    attractor=10
+    rdd=3
+    color=darkmagenta
+  ];
+  11 [
+    name=11
+    attractor=11
+    rdd=3
+    color=darkmagenta
+  ];
+  12 [
+    name=12
+    attractor=12
+    rdd=3
+    color=darkmagenta
+  ];
+  13 [
+    name=13
+    attractor=13
+    rdd=3
+    color=darkmagenta
+  ];
+  14 [
+    name=14
+    attractor=14
+    rdd=3
+    color=darkmagenta
+  ];
+  15 [
+    name=15
+    attractor=15
+    rdd=3
+    color=darkmagenta
+  ];
+  16 [
+    name=16
+    attractor=16
+    rdd=3
+    color=darkmagenta
+  ];
+
+  0 -> 9;
+  0 -> 11;
+  1 -> 9;
+  1 -> 11;
+  2 -> 10;
+  2 -> 12;
+  2 -> 14;
+  2 -> 15;
+  2 -> 16;
+  3 -> 10;
+  3 -> 12;
+  3 -> 14;
+  3 -> 15;
+  3 -> 16;
+  4 -> 10;
+  4 -> 12;
+  4 -> 14;
+  4 -> 15;
+  4 -> 16;
+  5 -> 9;
+  5 -> 11;
+  6 -> 9;
+  6 -> 11;
+  7 -> 9;
+  7 -> 11;
+  8 -> 10;
+  8 -> 12;
+  8 -> 14;
+  8 -> 15;
+  8 -> 16;
+  9 -> 5;
+  10 -> 5;
+  11 -> 5;
+  12 -> 5;
+  13 -> 5;
+  14 -> 5;
+  15 -> 5;
+  16 -> 6;
+  16 -> 7;
+  16 -> 8;
+}
