@@ -8,7 +8,7 @@ from clases.red_rddas_model import RedRddasModel
 # PROGRAM TO FIND STABILITY AND SYNCHRONISE IN RDDA
 # Receiving the parameters
 n_of_rddas = 5
-n_of_variables_rdda = 5
+n_of_variables_rdda = 10
 n_of_signals_rdda = 2
 n_exit_variables = 2
 n_clauses_function = 2

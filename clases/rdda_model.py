@@ -430,8 +430,8 @@ class RddaModel:
             return number_of_times
 
         # print "BEGIN TO FIND ATTRACTORS"
-        print("RED NUMBER : " + str(oRDD.number_of_rdda) + " PERMUTATION SIGNAL COUPLING: " + l_signal_coupling)
-        # create boolean expresion initial with transition = n
+        print("NETWORK NUMBER : " + str(oRDD.number_of_rdda) + " PERMUTATION SIGNAL COUPLING: " + l_signal_coupling)
+        # create boolean expression initial with "n" transitions
         oRDD.set_of_attractors = []
         v_num_transitions = 3
         l_atractors = []
@@ -454,13 +454,16 @@ class RddaModel:
                     # print(oRDD.dic_var_cnf)
                     # print("TEST")
 
+
+                    print(oRDD.dic_var_cnf.get(f'{i}_{j}'))
+                    print("======================================")
                     print(oRDD.dic_var_cnf.keys())
                     print(oRDD.dic_var_cnf.values())
                     print(o_solution.varmap)
-                    print(oRDD.dic_var_cnf.get(f'{i}_{j}'))
+                    print("Length 1:", len(oRDD.dic_var_cnf))
+                    print("Length 2:", len(o_solution.varmap.keys()))
                     #print(f"{i}_{j}")
                     m_respuesta_sat[j].append(o_solution[oRDD.dic_var_cnf[f'{i}_{j}']])
-
         else:
             # print(" ")
             print("The expression cannot be satisfied")
