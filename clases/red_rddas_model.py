@@ -4,7 +4,7 @@ import igraph as ig
 import matplotlib.pyplot as plt  # library to make draws
 import matplotlib.colors as mcolors # library who have the list of colors
 import pickle  # library to serialization object
-# import ray # Library to paralelization, distribution and scalability
+import ray # Library to paralelization, distribution and scalability
 
 # import json # library to serialization object
 # import xml.etree.ElementTree as ET # library to serialization object
@@ -435,8 +435,8 @@ class RedRddasModel(object):
         print("######################################################")
         return oRedRddasModel
 
-#    @staticmethod
-#    @ray.remote
+    @staticmethod
+    @ray.remote
     def find_attractors_rddas_ray(oRedRddasModel):
         print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
         # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
@@ -448,14 +448,14 @@ class RedRddasModel(object):
             for v_permutation in l_permutation:
                 # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
                 # EST [RDDA Object, permutation,[List of attractors]]
-                result = RddaModel.findLocalAtractorsSATSatispy.remote(oRdda,''.join(v_permutation))
+                result = RddaModel.findLocalAtractorsSATSatispy_ray.remote(oRdda,''.join(v_permutation))
                 oRedRddasModel.l_rdda_permutation_attractors.append([oRdda, ''.join(v_permutation), ray.get(result)])
         print("END CALCULATE ALL LOCAL ATTRACTORS")
         print("######################################################")
         return oRedRddasModel
 
-#   @staticmethod
-#    @ray.remote
+    @staticmethod
+    @ray.remote
     def calculation_compatible_pairs(oRedRddasModel):
         # SHOW ATTRACTORS GROUP BY RDDA AND PERMUTATION
         print("ATTRACTORS GROUP BY RDDA AND PERMUTATION")

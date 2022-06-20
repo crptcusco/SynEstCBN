@@ -1,10 +1,6 @@
 from clases.red_rddas_model import RedRddasModel
 # import ray
 
-# import gc
-#
-# gc.collect()
-
 # PROGRAM TO FIND STABILITY AND SYNCHRONISE IN RDDA
 # Receiving the parameters
 n_of_rddas = 5

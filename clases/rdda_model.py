@@ -2,7 +2,7 @@ from satispy import Variable
 from satispy.solver import Minisat
 from igraph import *  # library to make network graphs
 import matplotlib.pyplot as plt  # library to make draws
-# import ray # Library to paralelization, distribution and scalability
+import ray # Library to paralelization, distribution and scalability
 
 class RddaModel:
     def __init__(self, number_of_rdda, list_of_v_intern, list_of_signals=[]):
@@ -417,15 +417,21 @@ class RddaModel:
                     boolean_function_of_atractors = boolean_function_of_atractors & - boolean_expresion_clausule_of_atractors
                 cont_clausula = cont_clausula + 1
             boolean_function = boolean_function & boolean_function_of_atractors
-            # print(boolean_function)
+
+        # Add all the variables of the position 0 to the booblean function
+        for variable in oRDD.list_of_v_total:
+            boolean_function = boolean_function & (
+                        oRDD.dic_var_cnf[str(variable) + "_0"] | - oRDD.dic_var_cnf[str(variable) + "_0"])
+        print(boolean_function)
+
         return boolean_function
 
     def findLocalAtractorsSATSatispy(oRDD, l_signal_coupling):
-        def countStateRepeat(estado, path_solution):
+        def countStateRepeat(v_estate, path_solution):
             # input type [[],[],...[]]
             number_of_times = 0
-            for elemento in path_solution:
-                if elemento == estado:
+            for v_element in path_solution:
+                if v_element == v_estate:
                     number_of_times = number_of_times + 1
             return number_of_times
 
@@ -449,23 +455,11 @@ class RddaModel:
             for j in range(0, v_num_transitions):
                 m_respuesta_sat.append([])
                 for i in oRDD.list_of_v_total:
-                    # print("TEST")
-                    # print(str(i)+"_"+str(j))
-                    # print(oRDD.dic_var_cnf)
-                    # print("TEST")
-
-
-                    print(oRDD.dic_var_cnf.get(f'{i}_{j}'))
-                    print("======================================")
-                    print(oRDD.dic_var_cnf.keys())
-                    print(oRDD.dic_var_cnf.values())
-                    print(o_solution.varmap)
-                    print("Length 1:", len(oRDD.dic_var_cnf))
-                    print("Length 2:", len(o_solution.varmap.keys()))
-                    #print(f"{i}_{j}")
+                    print("_________________________________________")
+                    print("Variable de Erro:", f"{i}_{j}")
+                    print(v_bool_function)
                     m_respuesta_sat[j].append(o_solution[oRDD.dic_var_cnf[f'{i}_{j}']])
         else:
-            # print(" ")
             print("The expression cannot be satisfied")
 
         # BLOCK ATRACTORS
@@ -563,8 +557,8 @@ class RddaModel:
         # print ("END OF FIND ATRACTORS")
         return oRDD.set_of_attractors
 
-#    @staticmethod
-#    @ray.remote
+    @staticmethod
+    @ray.remote
     def findLocalAtractorsSATSatispy_ray(oRDD, l_signal_coupling):
         def countStateRepeat(estado, path_solution):
             # input type [[],[],...[]]
