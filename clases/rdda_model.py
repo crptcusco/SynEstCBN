@@ -1,8 +1,7 @@
 from satispy import Variable
-from satispy.solver import Minisat
-from igraph import *  # library to make network graphs
-import matplotlib.pyplot as plt  # library to make draws
-import ray # Library to paralelization, distribution and scalability
+from satispy.solver import Minisat # Library
+import ray # Library to parallelization, distribution and scalability
+
 
 class RddaModel:
     def __init__(self, number_of_rdda, list_of_v_intern, list_of_signals=[]):
@@ -20,20 +19,14 @@ class RddaModel:
         self.dic_res_var = {}
         self.list_permutations_attractors = []
 
-    def proccesParameters(self):
-
-        # Procesesing the input of rdda
+    def procces_parameters(self):
+        # Processing the input of RDDA
         for v_signal in self.list_of_signals:
-            # print (v_signal.name_variable)
             self.list_of_v_exterm.append(v_signal.name_variable)
         # update the value of list_variables
         self.list_of_v_total.extend(self.list_of_v_intern.copy())
         self.list_of_v_total.extend(self.list_of_v_exterm.copy())
         self.number_of_v_total = len(self.list_of_v_total)
-
-        # oRdda.show()
-        # print(self.list_of_v_total)
-        # print(self.list_of_v_exterm)
 
     def show(self):
         print("================================================================")
@@ -56,12 +49,12 @@ class RddaModel:
             print("Permutation: ", permutation_attractor[0], "Attractors: ")
             print(permutation_attractor[1])
 
-    def generate_boolean_formulation(self, number_of_transitions, l_atractors_clausules, permutation):
+    def generate_boolean_formulation(self, number_of_transitions, l_attractors_clauses, permutation):
         # create dictionary of cnf variables!!
-        for variable in self.list_of_v_total:
+        for n_variable in self.list_of_v_total:
             for transition_c in range(0, number_of_transitions):
-                self.dic_var_cnf[str(variable) + "_" + str(transition_c)] = Variable(
-                    str(variable) + "_" + str(transition_c))
+                self.dic_var_cnf[str(n_variable) + "_" + str(transition_c)] = Variable(
+                    str(n_variable) + "_" + str(transition_c))
 
         # transition_aux = 0
         cont_transition = 0
@@ -139,10 +132,10 @@ class RddaModel:
             cont_permutacion = cont_permutacion + 1
 
         # add atractors to boolean function
-        if len(l_atractors_clausules) > 0:
+        if len(l_attractors_clauses) > 0:
             boolean_function_of_attractors = Variable("0_0")
             cont_clause = 0
-            for clause in l_atractors_clausules:
+            for clause in l_attractors_clauses:
                 boolean_expression_clause_of_attractors = Variable("0_0")
                 cont_termino = 0
                 for termino in clause:
@@ -180,127 +173,6 @@ class RddaModel:
             if element == state:
                 number_of_times = number_of_times + 1
         return number_of_times
-
-    # def find_local_attractor_by_permutation(self, permutation):
-    #     # format List = (permutation,[attractors])
-    #     l_permutation_attractor = [permutation, []]
-    #
-    #     # print "BEGIN TO FIND ATTRACTORS"
-    #     # create boolean expression initial with transition = n
-    #     set_of_attractors = []
-    #     v_num_transitions = 3
-    #     l_attractors = []
-    #     l_attractors_clauses = []
-    #
-    #     # REPEAT CODE
-    #     v_bool_function = self.generate_boolean_formulation(v_num_transitions, l_attractors_clauses, permutation)
-    #     m_response_sat = []
-    #     o_solver = Minisat()
-    #     o_solution = o_solver.solve(v_bool_function)
-    #
-    #     # print(oRDD.number_of_v_total)
-    #     if o_solution.success:
-    #         for j in range(0, v_num_transitions):
-    #             m_response_sat.append([])
-    #             for i in self.list_of_v_total:
-    #                 # print("TEST")
-    #                 # print(str(i)+"_"+str(j))
-    #                 # print(oRDD.dic_var_cnf)
-    #                 # print("TEST")
-    #                 m_response_sat[j].append(o_solution[self.dic_var_cnf[str(i) + "_" + str(j)]])
-    #     else:
-    #         # print(" ")
-    #         print("The expression cannot be satisfied")
-    #
-    #     # BLOCK ATTRACTORS
-    #     m_auxiliary_sat = []
-    #     if len(m_response_sat) != 0:
-    #         # TRANSFORM BOOLEAN TO MATRIX BOOLEAN RESPONSE
-    #         for j in range(0, v_num_transitions):
-    #             matrix_aux_sat = []
-    #             for i in range(0, self.number_of_v_total):
-    #                 if m_response_sat[j][i]:
-    #                     matrix_aux_sat.append("1")
-    #                 else:
-    #                     matrix_aux_sat.append("0")
-    #             m_auxiliary_sat.append(matrix_aux_sat)
-    #         # m_boolean_res = m_auxiliary_sat
-    #     m_boolean_res = m_auxiliary_sat
-    #     # BLOCK ATTRACTORS
-    #     # REPEAT CODE
-    #
-    #     while len(m_boolean_res) > 0:
-    #         # print ("path")
-    #         # print (m_boolean_res)
-    #         # print ("path")
-    #         path_solution = []
-    #         for path_transition in m_boolean_res:
-    #             path_solution.append(path_transition)
-    #
-    #         # new list of state attractors
-    #         l_news_estates_attractor = []
-    #         # check attractors
-    #         for v_state in path_solution:
-    #             v_state_count = self.count_state_repeat(v_state, path_solution)
-    #             if v_state_count > 1:
-    #                 attractor_begin = path_solution.index(v_state) + 1
-    #                 attractor_end = path_solution[attractor_begin:].index(v_state)
-    #                 l_news_estates_attractor = path_solution[attractor_begin - 1:(attractor_begin + attractor_end)]
-    #                 l_attractors = l_attractors + l_news_estates_attractor
-    #                 # add attractors like list of list
-    #                 set_of_attractors.append(l_news_estates_attractor)
-    #                 break
-    #
-    #         # duplicate the number of transitions"
-    #         if len(l_news_estates_attractor) == 0:
-    #             v_num_transitions = v_num_transitions * 2
-    #
-    #         # transform list of attractors to clauses
-    #         for clause_attractor in l_attractors:
-    #             clause_variable = []
-    #             cont_variable = 0
-    #             for estate_attractor in clause_attractor:
-    #                 if estate_attractor == "0":
-    #                     clause_variable.append("-" + str(self.list_of_v_total[cont_variable]))
-    #                 else:
-    #                     clause_variable.append(str(self.list_of_v_total[cont_variable]))
-    #                 cont_variable = cont_variable + 1
-    #             l_attractors_clauses.append(clause_variable)
-    #
-    #         # print l_attractors_clauses
-    #         # REPEAT CODE
-    #         v_bool_function = self.generate_boolean_formulation(v_num_transitions, l_attractors_clauses, permutation)
-    #         m_response_sat = []
-    #         o_solver = Minisat()
-    #         o_solution = o_solver.solve(v_bool_function)
-    #
-    #         if o_solution.success:
-    #             for j in range(0, v_num_transitions):
-    #                 m_response_sat.append([])
-    #                 for i in self.list_of_v_total:
-    #                     m_response_sat[j].append(o_solution[self.dic_var_cnf[str(i) + "_" + str(j)]])
-    #         else:
-    #             # print(" ")
-    #             print("The expression cannot be satisfied")
-    #
-    #         # BLOCK ATTRACTORS
-    #         m_auxiliary_sat = []
-    #         if len(m_response_sat) != 0:
-    #             # TRANSFORM BOOLEAN TO MATRIX BOOLEAN RESPONSE
-    #             for j in range(0, v_num_transitions):
-    #                 matrix_aux_sat = []
-    #                 for i in range(0, self.number_of_v_total):
-    #                     if m_response_sat[j][i]:
-    #                         matrix_aux_sat.append("1")
-    #                     else:
-    #                         matrix_aux_sat.append("0")
-    #                 m_auxiliary_sat.append(matrix_aux_sat)
-    #             # m_boolean_res = m_auxiliary_sat
-    #         m_boolean_res = m_auxiliary_sat
-    #         # BLOCK ATTRACTORS
-    #         # REPEAT CODE
-    #     l_permutation_attractor[1] = set_of_attractors
-    #     self.list_permutations_attractors.append(l_permutation_attractor)
 
     @staticmethod
     def generateBooleanFormulationSatispy(oRDD, number_of_transitions, l_atractors_clausules, l_signal_coupling):
@@ -422,8 +294,7 @@ class RddaModel:
         for variable in oRDD.list_of_v_total:
             boolean_function = boolean_function & (
                         oRDD.dic_var_cnf[str(variable) + "_0"] | - oRDD.dic_var_cnf[str(variable) + "_0"])
-        print(boolean_function)
-
+        # print(boolean_function)
         return boolean_function
 
     def findLocalAtractorsSATSatispy(oRDD, l_signal_coupling):
@@ -560,11 +431,11 @@ class RddaModel:
     @staticmethod
     @ray.remote
     def findLocalAtractorsSATSatispy_ray(oRDD, l_signal_coupling):
-        def countStateRepeat(estado, path_solution):
+        def countStateRepeat(state, path_solution):
             # input type [[],[],...[]]
             number_of_times = 0
-            for elemento in path_solution:
-                if elemento == estado:
+            for element in path_solution:
+                if element == state:
                     number_of_times = number_of_times + 1
             return number_of_times
 
@@ -687,7 +558,7 @@ class RddaModel:
             # BLOCK ATRACTORS
             # REPEAT CODE
 
-        # print oRDD.set_of_attractors
+        # print (oRDD.set_of_attractors)
         # print(" ")
         # print ("END OF FIND ATRACTORS")
         return oRDD.set_of_attractors

@@ -149,7 +149,7 @@ class RedRddasModel(object):
         self.list_of_rddas = aux2_lista_of_rddas.copy()
 
         for rdda in self.list_of_rddas:
-            rdda.proccesParameters()
+            rdda.procces_parameters()
             print("RDDA CREATED")
 
     @staticmethod
@@ -738,8 +738,8 @@ class RedRddasModel(object):
         print("======================================================")
         return oRedRddasModel
 
-#    @staticmethod
-#    @ray.remote
+    @staticmethod
+    @ray.remote
     def assembly_attractor_fields_iterative(oRedRddasModel):
         # return the rdda of each attractor of the pair
         def netMapping(pair):
@@ -795,8 +795,8 @@ class RedRddasModel(object):
         print("######################################################")
         return oRedRddasModel
 
-    # @staticmethod
-    # @ray.remote
+    @staticmethod
+    @ray.remote
     def assembly_attractor_fields_optimized(oRedRddasModel):
         # FORMAT : [field1 , field2, [[rdda1, attractor],[rdda2, attractor], ...], field 4 , ...]
         # list_of_field_attractors = []
@@ -837,7 +837,7 @@ class RedRddasModel(object):
             oRedRddasModel.list_signal_pairs.append(l_element[1])
         oRedRddasModel.list_signal_pairs
 
-        #Function Cartessian Product Modified
+        # Function Cartessian Product Modified
         # return the rdda of each attractor of the pair
         def f_netMapping(pair):
             elements = list()

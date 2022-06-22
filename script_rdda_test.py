@@ -1,8 +1,8 @@
+# Imports
 from clases.red_rddas_model import RedRddasModel
-# import ray
+import ray
 
-# PROGRAM TO FIND STABILITY AND SYNCHRONISE IN RDDA
-# Receiving the parameters
+# Parameters
 n_of_rddas = 5
 n_of_variables_rdda = 10
 n_of_signals_rdda = 2
