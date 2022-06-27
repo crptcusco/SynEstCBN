@@ -56,20 +56,20 @@ class RedRddasModel(object):
         print("Maximum number of exit variables by signal : " + str(self.number_of_rddas))
         print("Maximum number of clauses by function : " + str(self.number_of_rddas))
         print("================================================================")
-        for o_rdda in self.list_of_rddas:
-            # print(oRdd)
-            o_rdda.show()
+        # Print the list of RDDs
+        # for o_rdda in self.list_of_rddas:
+        #     o_rdda.show()
 
     def generate_rddas(self, type_network="ALEATORY"):
         # generate the RDDAs variables
         v_contador_variable = 1
         for v_number_of_rdda in range(1, self.number_of_rddas + 1):
-            print("RDDA : ", v_number_of_rdda)
+            # print("RDDA : ", v_number_of_rdda)
             list_of_v_intern = []
             for v_numero_variable in range(v_contador_variable, v_contador_variable + self.number_of_variables_rdda):
                 list_of_v_intern.append(v_numero_variable)
                 v_contador_variable = v_contador_variable + 1
-            print("VARIABLES : ", list_of_v_intern)
+            # print("VARIABLES : ", list_of_v_intern)
             oRddaModel = RddaModel(v_number_of_rdda, list_of_v_intern)
             self.list_of_rddas.append(oRddaModel)
 
@@ -103,7 +103,8 @@ class RedRddasModel(object):
                 # define the maximum number of output variables with professor
                 oSignalModel = SignalModel(oRddaModel.number_of_rdda, v_rdda_co.number_of_rdda, l_variaveis_saida,
                                            v_contador_variable, acoplament_function)
-                oSignalModel.show()
+                # Show the Signals
+                # oSignalModel.show()
                 lista_signals.append(oSignalModel)
                 v_contador_variable = v_contador_variable + 1
             oRddaModel.list_of_signals = lista_signals.copy()
@@ -114,7 +115,7 @@ class RedRddasModel(object):
         # for v_rdda in self.list_of_rddas:
         #    v_rdda.show() 
 
-        # GENERATE THE DYNAMICS
+        # GENERATE THE DYNAMICS OF EACH RDD
         number_max_of_clausules = self.number_clauses_function
         number_max_of_literals = 3
         # we generate an auxiliary list to add the coupling signals
@@ -149,8 +150,8 @@ class RedRddasModel(object):
         self.list_of_rddas = aux2_lista_of_rddas.copy()
 
         for rdda in self.list_of_rddas:
-            rdda.procces_parameters()
-            print("RDDA CREATED")
+            rdda.process_parameters()
+            # print("RDDA CREATED")
 
     @staticmethod
     def save_file_pickle(oRedRddasModel, v_path):
@@ -663,8 +664,8 @@ class RedRddasModel(object):
                 l_coupling_signals.append([oSignal.rdda_entrada, oSignal.rdda_salida])
 
         # show the list of signals in list format [rdda_input, rdda_output]
-        for v_signal in l_coupling_signals:
-            print(v_signal)
+        # for v_signal in l_coupling_signals:
+        #     print(v_signal)
 
         # generate one list of links for every signal
         d_coupling_signal = {}
@@ -674,9 +675,9 @@ class RedRddasModel(object):
                 if str(v_link[0][0]) + "_" + str(v_link[1][0]) == str(v_signal[0]) + "_" + str(v_signal[1]):
                     d_coupling_signal[str(v_signal[0]) + "_" + str(v_signal[1])].append(v_link)
         # show the adjacency List
-        for v_key, v_values in d_coupling_signal.items():
-            print(str(v_key) + " : " + str(v_values))
-        print("------------------------------------------------------")
+        # for v_key, v_values in d_coupling_signal.items():
+        #     print(str(v_key) + " : " + str(v_values))
+        # print("------------------------------------------------------")
 
         # ENUMERATE METHOD TO FIND ATTRACTOR FIELDS
         print("BEGIN CALCULATE ATTRACTORS FIELDS")
@@ -904,8 +905,8 @@ class RedRddasModel(object):
             # print(l_cartesian_product)
             v_cont = v_cont + 1
 
-        print("OUPUT", len(l_cartesian_product))
-        # Print the elements of cartessian product
+        print("OUTPUT", len(l_cartesian_product))
+        # Print the elements of cartesian product
         # for v_element in l_cartesian_product:
         #     print(v_element)
 

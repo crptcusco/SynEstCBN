@@ -19,7 +19,7 @@ class RddaModel:
         self.dic_res_var = {}
         self.list_permutations_attractors = []
 
-    def procces_parameters(self):
+    def process_parameters(self):
         # Processing the input of RDDA
         for v_signal in self.list_of_signals:
             self.list_of_v_exterm.append(v_signal.name_variable)
@@ -439,8 +439,8 @@ class RddaModel:
                     number_of_times = number_of_times + 1
             return number_of_times
 
-        # print "BEGIN TO FIND ATTRACTORS"
-        print("RED NUMBER : " + str(oRDD.number_of_rdda) + " PERMUTATION SIGNAL COUPLING: " + l_signal_coupling)
+        # print("BEGIN TO FIND ATTRACTORS")
+        # print("RED NUMBER : " + str(oRDD.number_of_rdda) + " PERMUTATION SIGNAL COUPLING: " + l_signal_coupling)
         # create boolean expresion initial with transition = n
         oRDD.set_of_attractors = []
         v_num_transitions = 3
