@@ -2,9 +2,9 @@ import random  # generate random numbers
 import networkx as nx  # library to work with graphs
 import igraph as ig
 import matplotlib.pyplot as plt  # library to make draws
-import matplotlib.colors as mcolors # library who have the list of colors
+import matplotlib.colors as mco # library who have the list of colors
 import pickle  # library to serialization object
-import ray # Library to paralelization, distribution and scalability
+import ray # Library to parallelization, distribution and scalability
 
 # import json # library to serialization object
 # import xml.etree.ElementTree as ET # library to serialization object
@@ -41,7 +41,7 @@ class RedRddasModel(object):
         self.d_rdd_color = {}
         # List of color for the graphics
         self.rdd_color_dict = {}
-        list_colors = list(mcolors.CSS4_COLORS.keys())
+        list_colors = list(mco.CSS4_COLORS.keys())
         random.shuffle(list_colors)
         for i, color in enumerate(list_colors):
             self.rdd_color_dict[i] = color
@@ -62,13 +62,12 @@ class RedRddasModel(object):
 
     def generate_rddas(self, type_network="ALEATORY"):
         # generate the RDDAs variables
-        v_contador_variable = 1
+        v_cont_variable = 1
         for v_number_of_rdda in range(1, self.number_of_rddas + 1):
-            # print("RDDA : ", v_number_of_rdda)
             list_of_v_intern = []
-            for v_numero_variable in range(v_contador_variable, v_contador_variable + self.number_of_variables_rdda):
-                list_of_v_intern.append(v_numero_variable)
-                v_contador_variable = v_contador_variable + 1
+            for v_number_variable in range(v_cont_variable, v_cont_variable + self.number_of_variables_rdda):
+                list_of_v_intern.append(v_number_variable)
+                v_cont_variable = v_cont_variable + 1
             # print("VARIABLES : ", list_of_v_intern)
             oRddaModel = RddaModel(v_number_of_rdda, list_of_v_intern)
             self.list_of_rddas.append(oRddaModel)
@@ -86,27 +85,22 @@ class RedRddasModel(object):
             lista_signals = []
             for v_rdda_co in l_rdda_co:
                 # generate the list of coupling variables
-                l_variaveis_saida = random.sample(v_rdda_co.list_of_v_intern, self.number_exit_variables)
+                l_output_variables = random.sample(v_rdda_co.list_of_v_intern, self.number_exit_variables)
 
                 # FUTURE JOB!!!
                 # generate the coupling function
-                # acoplament_function = " & ".join( list(map(str, l_variaveis_saida)))
-                # acoplament_function = "|".join( list(map(str, l_variaveis_saida)))
+                # coupling_function = " & ".join( list(map(str, l_output_variables)))
+                # coupling_function = "|".join( list(map(str, l_output_variables)))
 
                 # We validate if we have one or several output variables
-                if (self.number_exit_variables == 1):
-                    acoplament_function = l_variaveis_saida[0]
+                if self.number_exit_variables == 1:
+                    coupling_function = l_output_variables[0]
                 else:
-                    acoplament_function = " ∨ ".join(list(map(str, l_variaveis_saida)))
-                # print(acoplament_function)
-                # sys.exit()
-                # define the maximum number of output variables with professor
-                oSignalModel = SignalModel(oRddaModel.number_of_rdda, v_rdda_co.number_of_rdda, l_variaveis_saida,
-                                           v_contador_variable, acoplament_function)
-                # Show the Signals
-                # oSignalModel.show()
-                lista_signals.append(oSignalModel)
-                v_contador_variable = v_contador_variable + 1
+                    coupling_function = " ∨ ".join(list(map(str, l_output_variables)))
+                o_signal_model = SignalModel(oRddaModel.number_of_rdda, v_rdda_co.number_of_rdda, l_output_variables,
+                                             v_cont_variable, coupling_function)
+                lista_signals.append(o_signal_model)
+                v_cont_variable = v_cont_variable + 1
             oRddaModel.list_of_signals = lista_signals.copy()
             aux1_list_of_rddas.append(oRddaModel)
         self.list_of_rddas = aux1_list_of_rddas.copy()
@@ -116,7 +110,7 @@ class RedRddasModel(object):
         #    v_rdda.show() 
 
         # GENERATE THE DYNAMICS OF EACH RDD
-        number_max_of_clausules = self.number_clauses_function
+        number_max_of_clauses = self.number_clauses_function
         number_max_of_literals = 3
         # we generate an auxiliary list to add the coupling signals
         aux2_lista_of_rddas = []
@@ -133,15 +127,15 @@ class RedRddasModel(object):
             description_variables = []
             # generate clauses
             for v_description_variable in oRddaModel.list_of_v_intern:
-                l_clausules_node = []
-                for v_clausula in range(0, randint(1, number_max_of_clausules)):
+                l_clauses_node = []
+                for v_clause in range(0, randint(1, number_max_of_clauses)):
                     v_num_variable = randint(1, number_max_of_literals)
                     # randomly select from the signal variables
-                    l_literais_variables = random.sample(l_aux_variables, v_num_variable)
-                    l_clausules_node.append(l_literais_variables)
+                    l_literals_variables = random.sample(l_aux_variables, v_num_variable)
+                    l_clauses_node.append(l_literals_variables)
                 # adding the description of variable in form of object
-                oVariableModel = VariableModel(v_description_variable, l_clausules_node)
-                description_variables.append(oVariableModel)
+                o_variable_model = VariableModel(v_description_variable, l_clauses_node)
+                description_variables.append(o_variable_model)
                 # adding the description in functions of every variable
             # adding the RDDA to list of RDDAs
             oRddaModel.description_variables = description_variables.copy()
@@ -170,10 +164,6 @@ class RedRddasModel(object):
             # have to specify it.
             data = pickle.load(f)
             return data
-
-    @staticmethod
-    def saveInFileXML(oRedRddasModel, v_path):
-        pass
 
     # Graph the topology of the RDDA using Networkx library
     def graph_topology_networkx(self, save_graph: bool = False, show_graph: bool = False, path_graph=""):

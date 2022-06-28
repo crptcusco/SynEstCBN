@@ -26,7 +26,7 @@ class SignalModel(object):
 
     def process_true_table(self):
         r_true_table = {}
-        print("Generating the True Table")
+        # print("Generating the True Table")
         # First we must understand the coupling signal
         # we will use regular expressions to recognize the boolean formula
 
@@ -173,34 +173,34 @@ class SignalModel(object):
             cont_aux_abecedario = cont_aux_abecedario + 1
 
         # generate combinations of the output signal
-        l_permutaciones = []
+        l_permutations = []
         for v_permutacion in product([True, False], repeat=len(self.l_variaveis_saida)):
-            l_permutaciones.append(v_permutacion)
+            l_permutations.append(v_permutacion)
 
         # process each of the permutations we simply have to evaluate and solve
-        for c_permutacion in l_permutaciones:
-            aux_dictionary = dict(zip(dict_aux_var_saida.values(), c_permutacion))
+        for c_permutation in l_permutations:
+            aux_dictionary = dict(zip(dict_aux_var_saida.values(), c_permutation))
             aux_acoplament_function = self.acoplament_function
-            for aux_elemento in dict_aux_var_saida.keys():
-                aux_acoplament_function = aux_acoplament_function.replace(str(aux_elemento),
-                                                                          str(dict_aux_var_saida[aux_elemento]))
-            print(aux_acoplament_function)
-            print(dict_aux_var_saida)
-            print(aux_dictionary)
+            for aux_element in dict_aux_var_saida.keys():
+                aux_acoplament_function = aux_acoplament_function.replace(str(aux_element),
+                                                                          str(dict_aux_var_saida[aux_element]))
+            # print(aux_acoplament_function)
+            # print(dict_aux_var_saida)
+            # print(aux_dictionary)
 
             # Creating the key of the truth table
-            aux_llave = ''
-            for v_literal in c_permutacion:
-                if (v_literal == True):
-                    aux_llave = aux_llave + "1"
+            aux_key = ''
+            for v_literal in c_permutation:
+                if v_literal:
+                    aux_key = aux_key + "1"
                 else:
-                    aux_llave = aux_llave + "0"
+                    aux_key = aux_key + "0"
             if evaluate(parse(aux_acoplament_function), aux_dictionary):
-                r_true_table[aux_llave] = "1"
+                r_true_table[aux_key] = "1"
             else:
-                r_true_table[aux_llave] = "0"
+                r_true_table[aux_key] = "0"
 
-        # print the tru table
+        # print the true table
         # print(r_true_table)
         # sys.exit()
 

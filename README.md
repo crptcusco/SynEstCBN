@@ -30,11 +30,11 @@ sudo pip3 install networkx
 # install matplotlib
 sudo pip3 install matplotlib
 
-# install ray
-sudo pip3 install ray
-
 # install igraph
 sudo pip3 install igraph
+
+# install ray
+sudo pip3 install ray
 
 # HOW TO USE!!!
 python3.6 main.py 5 5 2 2
