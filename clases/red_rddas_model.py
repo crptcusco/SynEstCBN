@@ -75,8 +75,10 @@ class RedRddasModel(object):
         # generate coupling signals in one auxiliary list
         aux1_list_of_rddas = []
         for oRddaModel in self.list_of_rddas:
-            # how many coupling signals will they have
-            number_of_signals_rdda = randint(1, self.number_of_signals_rdda)
+            # how many coupling signals will they have RANDOM
+            # number_of_signals_rdda = randint(1, self.number_of_signals_rdda)
+            # Fixed number of coupling signals, fixed in 2
+            number_of_signals_rdda = self.number_of_signals_rdda
             # we create a list to choose the neighboring networks
             l_aux_rddas = self.list_of_rddas.copy()
             l_aux_rddas.remove(oRddaModel)
