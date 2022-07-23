@@ -98,7 +98,7 @@ class RedRddasModel(object):
                 if self.number_exit_variables == 1:
                     coupling_function = l_output_variables[0]
                 else:
-                    coupling_function = " ∨ ".join(list(map(str, l_output_variables)))
+                    coupling_function = " " +" ∨ ".join(list(map(str, l_output_variables))) + " "
                 o_signal_model = SignalModel(oRddaModel.number_of_rdda, v_rdda_co.number_of_rdda, l_output_variables,
                                              v_cont_variable, coupling_function)
                 lista_signals.append(o_signal_model)
