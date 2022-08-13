@@ -7,15 +7,15 @@ import numpy as np
 
 # Ray Configurations
 # ray.shutdown()
-# runtime_env = {"working_dir": "/home/reynaldo/Documents/RESEARCH/SynEstRDDA", "pip": ["requests", "pendulum==2.1.2"]}
-# ray.init(address='ray://172.17.163.253:10001', runtime_env=runtime_env, log_to_driver=False)
+runtime_env = {"working_dir": "/home/reynaldo/Documents/RESEARCH/SynEstRDDA", "pip": ["requests", "pendulum==2.1.2"]}
+ray.init(address='ray://172.17.163.253:10001', runtime_env=runtime_env, log_to_driver=False)
 # ray.init(address='ray://172.17.163.244:10001', runtime_env=runtime_env , log_to_driver=False, num_cpus=12)
-ray.init(log_to_driver=False, num_cpus=12)
+# ray.init(log_to_driver=False, num_cpus=12)
 
 # capture the time for all the experiment
 v_begin_exp = time.time()
 # Experiment for internal variable growth
-n_experiments = 5
+n_experiments = 500
 l_experiments = []
 for cont_experiment in range(1,n_experiments+1):
     print("============================")
@@ -23,8 +23,8 @@ for cont_experiment in range(1,n_experiments+1):
     print("============================")
 
     # Variable Parameters
-    n_of_var_by_rdd_min = 10
-    n_of_var_by_rdd_max = 15
+    n_of_var_by_rdd_min = 3
+    n_of_var_by_rdd_max = 10
 
     # Fixed Parameters
     n_of_rdds = 5
@@ -120,6 +120,6 @@ pf_res.reset_index(drop=True, inplace=True, level=1)
 print(pf_res)
 
 # Save the experiment data in csv, using pandas Dataframe
-path = "exp2_internal_variable_growth_data_test.csv"
+path = "exp2_internal_variable_growth_data500.csv"
 pf_res.to_csv(path)
 print("Experiment saved in:", path)

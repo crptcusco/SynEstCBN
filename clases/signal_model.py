@@ -184,11 +184,11 @@ class SignalModel(object):
             for aux_element in dict_aux_var_saida.keys():
                 aux_acoplament_function = aux_acoplament_function.replace(str(aux_element),
                                                                           str(dict_aux_var_saida[aux_element]))
-            print("========= Signal =========")
-            print(aux_acoplament_function)
-            print(dict_aux_var_saida)
-            print(aux_dictionary)
-            print("========= End Signal =========")
+            # print("========= Signal =========")
+            # print(aux_acoplament_function)
+            # print(dict_aux_var_saida)
+            # print(aux_dictionary)
+            # print("========= End Signal =========")
             # Creating the key of the truth table
             aux_key = ''
             for v_literal in c_permutation:
