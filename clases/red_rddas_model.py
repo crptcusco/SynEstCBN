@@ -905,3 +905,114 @@ class RedRddasModel(object):
         oRedRddasModel.attractor_fields = l_cartesian_product
         # print(oRedRddasModel.attractor_fields)
         return oRedRddasModel
+
+    def assembly_attractor_fields_tree(self):
+        # Order the initial List of pairs attractors
+        def f_order_groups(header):
+            def f_inspect_group(l_base, v_group):
+                for aux_par in l_base:
+                    if aux_par[0] == v_group[0] or aux_par[0] == v_group[1]:
+                        return True
+                    elif aux_par[1] == v_group[1] or aux_par[1] == v_group[0]:
+                        return True
+                return False
+
+            # Order the groups of compatible pairs
+            l_base = [header[0]]
+            aux_l_rest_groups = header[1:]
+            for v_group in aux_l_rest_groups:
+                if f_inspect_group(l_base, v_group):
+                    l_base.append(v_group)
+                else:
+                    aux_l_rest_groups.remove(v_group)
+                    aux_l_rest_groups.append(v_group)
+            header = [header[0]] + aux_l_rest_groups
+            return header
+
+        Array = self.group_signals_pairs
+        Header = [elm[0] for elm in Array]
+        Dict = {f'{elm[0]}': elm[1] for elm in Array}
+        List = [[key, Dict[f'{key}']] for key in f_order_groups(Header)]
+        self.group_signals_pairs = List
+        # Fill the list_signal_pairs with the order List
+        self.list_signal_pairs = []
+        for l_element in List:
+            self.list_signal_pairs.append(l_element[1])
+        self.list_signal_pairs
+
+        # Function Cartessian Product Modified
+        # return the rdda of each attractor of the pair
+        def f_netMapping(pair):
+            elements = list()
+            for i in range(2):
+                for net, rddas_attractor in enumerate(self.rddas_attractors):
+                    check_net = pair[i] in rddas_attractor
+                    if check_net:
+                        break
+                elements.append(net + 1)
+            return elements
+
+        # validate if one candidate_field have the same attractor by rdda
+        def f_is_valid(candidate_field):
+            res = True
+            rdd_dict = {}
+            for pair in candidate_field:
+                elements = f_netMapping(pair)
+                if not (elements[0] in rdd_dict):
+                    rdd_dict[elements[0]] = pair[0]
+                else:
+                    if not rdd_dict[elements[0]] == pair[0]:
+                        return False
+                if not (elements[1] in rdd_dict):
+                    rdd_dict[elements[1]] = pair[1]
+                else:
+                    if not rdd_dict[elements[1]] == pair[1]:
+                        return False
+            return res
+
+        # Evaluate if the elements of pair was be in the base
+        def f_evaluate_pair(l_base, v_pair):
+            # generate one dictionary to evaluate if already rdd was see
+            for aux_par in l_base:
+                if aux_par[0] == v_pair[0] or aux_par[0] == v_pair[1]:
+                    return True
+                elif aux_par[1] == v_pair[1] or aux_par[1] == v_pair[0]:
+                    return True
+            return False
+
+        def f_cartesian_product(l_base, list_a):
+            l_res = []
+            for v_element_base in l_base:
+                l_line = []
+                for v_element_a in list_a:
+                    if type(v_element_base[0]) is list:
+                        if f_evaluate_pair(v_element_base, v_element_a):
+                            l_line = v_element_base + [v_element_a]
+                            if f_is_valid(l_line):
+                                l_res.append(l_line)
+                    else:
+                        if f_evaluate_pair([v_element_base], v_element_a):
+                            l_line = [v_element_base] + [v_element_a]
+                            if f_is_valid(l_line):
+                                l_res.append(l_line)
+            return l_res
+
+        # l_total = [list(range(1,6)),list(range(6,11)),list(range(11,16)),list(range(16,21)),list(range(21,26))]
+        l_total = self.list_signal_pairs
+        l_cartesian_product = l_total[0]
+        v_cont = 1
+        while v_cont < len(l_total):
+            l_cartesian_product = f_cartesian_product(l_cartesian_product, l_total[v_cont])
+            # print("Cartesian")
+            # print(l_cartesian_product)
+            v_cont = v_cont + 1
+
+        print("OUTPUT", len(l_cartesian_product))
+        # Print the elements of cartesian product
+        # for v_element in l_cartesian_product:
+        #     print(v_element)
+
+        self.attractor_fields = l_cartesian_product
+        # print(oRedRddasModel.attractor_fields)
+
+        # show in a graph the trees

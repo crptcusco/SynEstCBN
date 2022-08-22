@@ -1,4 +1,4 @@
-# Script for generate  experiments_master_defense
+# Script for generate  master_defense
 # Imports
 from clases.red_rddas_model import RedRddasModel
 import ray

@@ -7,15 +7,15 @@ import numpy as np
 
 # Ray Configurations
 # ray.shutdown()
-runtime_env = {"working_dir": "/home/reynaldo/Documents/RESEARCH/SynEstRDDA", "pip": ["requests", "pendulum==2.1.2"]}
-ray.init(address='ray://172.17.163.253:10001', runtime_env=runtime_env, log_to_driver=False)
+# runtime_env = {"working_dir": "/home/reynaldo/Documents/RESEARCH/SynEstRDDA", "pip": ["requests", "pendulum==2.1.2"]}
+# ray.init(address='ray://172.17.163.253:10001', runtime_env=runtime_env, log_to_driver=False)
 # ray.init(address='ray://172.17.163.244:10001', runtime_env=runtime_env , log_to_driver=False, num_cpus=12)
-# ray.init(log_to_driver=False, num_cpus=12)
+ray.init(log_to_driver=False, num_cpus=12)
 
-# capture the time for all the experiment
+#capture the time for all the experiment
 v_begin_exp = time.time()
-# Experiment for internal variable growth
-n_experiments = 500
+# Experiment for global relations growth
+n_experiments = 50
 l_experiments = []
 for cont_experiment in range(1,n_experiments+1):
     print("============================")
@@ -23,12 +23,12 @@ for cont_experiment in range(1,n_experiments+1):
     print("============================")
 
     # Variable Parameters
-    n_of_var_by_rdd_min = 3
-    n_of_var_by_rdd_max = 10
+    n_of_signals_rdd_min = 2
+    n_of_signals_rdd_max = 4
 
     # Fixed Parameters
     n_of_rdds = 5
-    n_of_signals_rdd = 2
+    n_of_var_by_rdd = 5
     n_output_variables = 2
     n_clauses_function = 2
     type_network = "ALEATORY"
@@ -37,15 +37,16 @@ for cont_experiment in range(1,n_experiments+1):
     l_res_sample = []
 
     v_n_network = 1
-    for n_of_variables_rdd in range(n_of_var_by_rdd_min, n_of_var_by_rdd_max + 1):
+    for n_of_signals_rdd in range(n_of_signals_rdd_min, n_of_signals_rdd_max + 1):
         print("Number of Network:", v_n_network)
         print("Number of RDDs:", n_of_rdds)
-        print("Number of variables:", n_of_variables_rdd)
+        print("Number of Signals by RDD:", n_of_signals_rdd)
         print("-------------------------------")
 
         # generate the RDDAs of the Network of RDDAs
         print("generating the Network of RDDAs ...")
-        o_rdda_model = RedRddasModel(n_of_rdds, n_of_variables_rdd, n_of_signals_rdd, n_output_variables, n_clauses_function)
+        o_rdda_model = RedRddasModel(n_of_rdds, n_of_var_by_rdd, n_of_signals_rdd, n_output_variables,
+                                       n_clauses_function)
 
         # Generate the RDDs
         print("generating the rdds ...")
@@ -75,8 +76,7 @@ for cont_experiment in range(1,n_experiments+1):
         # Save the results for the experiment , numeric and time indicators
         res_dict = {
                     "n_network": v_n_network,
-                    "n_rdds": n_of_rdds,
-                    "n_variables": n_of_variables_rdd,
+                    "n_variables": n_of_var_by_rdd,
                     "n_coupling_signals": n_of_signals_rdd,
                     "n_rdda_attractors": len(o_rdda_model.d_global_rdda_attractor.items()),
                     "t_find_attractors_method": v_time_0,
@@ -91,23 +91,25 @@ for cont_experiment in range(1,n_experiments+1):
     # Add the sample data to pandas dataframe
     df = pd.DataFrame.from_dict(l_res_sample)
     l_experiments.append(df)
-# Capture the time of the experiment
+
+print("END EXPERIMENT")
+# Take the time of the experiment
 v_end_exp = time.time()
 v_time_exp = v_end_exp - v_begin_exp
-# print("Time of Experiment (in seg)", v_time_exp)
-# print("Time of Experiment (in hours, minutes and seconds)", time.strftime("%H:%M:%S", time.gmtime(v_time_exp)))
-print("END EXPERIMENT")
+print("Time experiment (in seconds): ", v_time_exp )
 
 # Time of Experiment (in seg) 1898.2322750091553
 # Time of Experiment (in hours, minutes and seconds) 00:31:38
+# Total Time 359606.66107463837 segs  - 4,16 days
 print("RESUME OF THE EXPERIMENT")
 print("--------------------------------------------------------------------")
 print("Name of the Experiment:", "Experiment 2 - Internal Variable Growth")
-print("Variable Parameters : Number os Variables")
-print("Range of Number of variables:",n_of_var_by_rdd_min,"-", n_of_var_by_rdd_max)
+print("Variable Parameters : Number os Relations")
+print("Range of signals by RDD :", n_of_signals_rdd_min , "-",n_of_signals_rdd_max)
 print("Fixed parameters")
-print("Number of rdds:",n_of_rdds)
-print("Number of signals by RDD :", n_of_signals_rdd)
+print("Number of RDDs:",n_of_rdds )
+print("Number of variables:",n_of_var_by_rdd)
+
 print("Number of output variables:", n_output_variables)
 print("Number of function clauses:", n_clauses_function)
 print("Network Type:", type_network)
@@ -117,9 +119,8 @@ print("Time of Experiment (in hours, minutes and seconds)", time.strftime("%H:%M
 print("--------------------------------------------------------------------")
 pf_res = pd.concat(l_experiments, keys=range(1,n_experiments+1), names=["n_sample","n_aux"], ignore_index=False)
 pf_res.reset_index(drop=True, inplace=True, level=1)
-print(pf_res)
 
 # Save the experiment data in csv, using pandas Dataframe
-path = "exp2_internal_variable_growth_data500.csv"
+path = "data/exp3_global_relations_growth_data50.csv"
 pf_res.to_csv(path)
 print("Experiment saved in:", path)
