@@ -4,6 +4,9 @@ import ray
 import time
 import pandas as pd
 import numpy as np
+import pickle  # library to serialization object
+
+from clases.experiment_model import ExperimentModel
 
 # Ray Configurations
 # ray.shutdown()
@@ -16,11 +19,14 @@ ray.init(log_to_driver=False, num_cpus=12)
 v_begin_exp = time.time()
 # Experiment for internal variable growth
 n_experiments = 5
-l_experiments = []
-for cont_experiment in range(1,n_experiments+1):
+d_exp = {}
+l_l_rddas = []
+for cont_experiment in range(1, n_experiments+1):
     print("============================")
     print("Experiment:", cont_experiment)
     print("============================")
+    l_experiment = []
+    l_rddas = []
 
     # Variable Parameters
     n_rddas_min = 3
@@ -57,14 +63,34 @@ for cont_experiment in range(1,n_experiments+1):
         v_end_0 = time.time()
         v_time_0 = v_end_0 - v_begin_0
 
+        # Save the results for the experiment , numeric and time indicators
+        res_dict = {
+            "n_network": v_n_network,
+            "n_rdds": n_of_rdds,
+            # "n_rdda_attractors": len(oRedRddasModel.d_global_rdda_attractor.items()),
+            "t_find_attractors_method": v_time_0
+            # "n_pair_attractors": len(oRedRddasModel.list_attractors_pairs),
+            # "t_comp_paris_method": v_time_1,
+            # "n_attractor_fields": len(oRedRddasModel.attractor_fields),
+            # "t_optimized_method": v_time_2
+        }
+        l_res_sample.append(res_dict)
+        v_n_network = v_n_network + 1
+
         # Add the sample data to pandas dataframe
         df = pd.DataFrame.from_dict(l_res_sample)
-        l_experiments.append(df)
+        l_experiment.append(df)
+        l_rddas.append(oRedRddasModel)
+    # Add the data to the dictionary of experiments
+    d_exp[cont_experiment] = res_dict
+    l_l_rddas.append(l_rddas)
 print("END EXPERIMENT")
 # Take the time of the experiment
 v_end_exp = time.time()
 v_time_exp = v_end_exp - v_begin_exp
+
 print("Time experiment (in seconds): ", v_time_exp)
+d_exp['total_time'] = v_time_exp
 
 # Time of Experiment (in seg) 1898.2322750091553
 # Time of Experiment (in hours, minutes and seconds) 00:31:38
@@ -84,10 +110,10 @@ print("--------------------------------------------------------------------")
 print("Time of Experiment (in seg)", v_time_exp)
 print("Time of Experiment (in hours, minutes and seconds)", time.strftime("%H:%M:%S", time.gmtime(v_time_exp)))
 print("--------------------------------------------------------------------")
-pf_res = pd.concat(l_experiments, keys=range(1, n_experiments + 1), names=["n_sample", "n_aux"], ignore_index=False)
-pf_res.reset_index(drop=True, inplace=True, level=1)
 
-# Save the experiment data in csv, using pandas Dataframe
-path = "data/exp_find_attractors.csv"
-pf_res.to_csv(path)
-print("Experiment saved in:", path)
+# Save the experiment data in pickle
+path = "data/exp_find_attractors_data"
+o_experiment = ExperimentModel(l_l_rddas, d_exp)
+ExperimentModel.save_file_pickle(o_experiment, path)
+path += ".pickle"
+print("File saved:", path)
