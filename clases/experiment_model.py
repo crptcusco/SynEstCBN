@@ -3,15 +3,23 @@ import pickle  # library to serialization object
 
 
 class ExperimentModel(object):
-    def __init__(self, d_data, o_rdda):
-        self.d_data = d_data
-        self.o_rdda = o_rdda
+    def __init__(self,d_meta, l_data):
+        self.d_meta = d_meta
+        self.l_data = l_data
 
     def show(self):
-        # print every information in d_data
-        for key, value in self.d_data.items():
+        # print every information in d_meta
+        for key, value in self.d_meta.items():
             print(key, ":", value)
-        self.o_rdda.show()
+        #
+        # for l_dict in self.l_data:
+        #     for d_data in l_dict:
+        #         for key, value in d_data.items():
+        #             print(key, ":", value)
+        #
+        # for l_rddas in self.l_l_rdda:
+        #     for o_rdda in l_rddas:
+        #         o_rdda.show()
 
     @staticmethod
     def save_file_pickle(o_experiment, v_path):
