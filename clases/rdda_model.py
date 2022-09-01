@@ -1,6 +1,6 @@
-from satispy import Variable
-from satispy.solver import Minisat # Library
-import ray # Library to parallelization, distribution and scalability
+from satispy import Variable  # Library to resolve SAT
+from satispy.solver import Minisat  # Library to resolve SAT
+import ray  # Library to parallelization, distribution and scalability
 
 
 class RddaModel:
@@ -166,6 +166,7 @@ class RddaModel:
             # print(boolean_function)
         return boolean_function
 
+    @staticmethod
     def count_state_repeat(self, state, path_solution):
         # input type [[],[],...[]]
         number_of_times = 0
@@ -326,9 +327,9 @@ class RddaModel:
             for j in range(0, v_num_transitions):
                 m_respuesta_sat.append([])
                 for i in oRDD.list_of_v_total:
-                    print("_________________________________________")
-                    print("Variable de Erro:", f"{i}_{j}")
-                    print(v_bool_function)
+                    # print("_________________________________________")
+                    # print("Variable de Erro:", f"{i}_{j}")
+                    # print(v_bool_function)
                     m_respuesta_sat[j].append(o_solution[oRDD.dic_var_cnf[f'{i}_{j}']])
         else:
             print("The expression cannot be satisfied")
