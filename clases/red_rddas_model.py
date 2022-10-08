@@ -106,6 +106,7 @@ class RedRddasModel(object):
                       "- Attractor:", self.d_global_rdda_attractor[attractor_index][1])
 
         print("========================")
+
     def show_attractor_fields(self):
         pass
 
@@ -1343,7 +1344,7 @@ class RedRddasModel(object):
         # print(oRedRddasModel.attractor_fields)
         return oRedRddasModel
 
-    def assembly_attractor_fields_tree(self):
+    def assembly_attractor_fields_experiment(self):
         # Order the initial List of pairs attractors
         def f_order_groups(header):
             def f_inspect_group(l_base, v_group):
@@ -1407,9 +1408,9 @@ class RedRddasModel(object):
                         return False
             return res
 
-        # Evaluate if the elements of pair was be in the base
+        # Evaluate if the elements of pair was being in the base
         def f_evaluate_pair(l_base, v_pair):
-            # generate one dictionary to evaluate if already rdd was see
+            # generate one dictionary to evaluate if already rdd was seen
             for aux_par in l_base:
                 if aux_par[0] == v_pair[0] or aux_par[0] == v_pair[1]:
                     return True
@@ -1434,12 +1435,16 @@ class RedRddasModel(object):
                                 l_res.append(l_line)
             return l_res
 
+        # Experiment partial solutions
+        l_partial_solutions = []
+
         # l_total = [list(range(1,6)),list(range(6,11)),list(range(11,16)),list(range(16,21)),list(range(21,26))]
         l_total = self.list_signal_pairs
         l_cartesian_product = l_total[0]
         v_cont = 1
         while v_cont < len(l_total):
             l_cartesian_product = f_cartesian_product(l_cartesian_product, l_total[v_cont])
+            l_partial_solutions.append(l_cartesian_product)
             # print("Cartesian")
             # print(l_cartesian_product)
             v_cont = v_cont + 1
@@ -1452,4 +1457,5 @@ class RedRddasModel(object):
         self.attractor_fields = l_cartesian_product
         # print(oRedRddasModel.attractor_fields)
 
-        # show in a graph the trees
+        # return the partial solutions
+        return l_partial_solutions
