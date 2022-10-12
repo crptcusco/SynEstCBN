@@ -4,6 +4,8 @@ import igraph as ig
 import matplotlib.pyplot as plt  # library to make draws
 import matplotlib.colors as mco # library who have the list of colors
 import pickle  # library to serialization object
+
+import pandas as pd
 import ray # Library to parallelization, distribution and scalability
 
 # import json # library to serialization object
@@ -1367,19 +1369,7 @@ class RedRddasModel(object):
             header = [header[0]] + aux_l_rest_groups
             return header
 
-        Array = self.group_signals_pairs
-        Header = [elm[0] for elm in Array]
-        Dict = {f'{elm[0]}': elm[1] for elm in Array}
-        List = [[key, Dict[f'{key}']] for key in f_order_groups(Header)]
-        self.group_signals_pairs = List
-        # Fill the list_signal_pairs with the order List
-        self.list_signal_pairs = []
-        for l_element in List:
-            self.list_signal_pairs.append(l_element[1])
-        self.list_signal_pairs
-
-        # Function Cartessian Product Modified
-        # return the rdda of each attractor of the pair
+        # Find the RDD for an attractor pair
         def f_netMapping(pair):
             elements = list()
             for i in range(2):
@@ -1418,6 +1408,7 @@ class RedRddasModel(object):
                     return True
             return False
 
+        # Function Cartesian Product Modified, return the rdda of each attractor of the pair
         def f_cartesian_product(l_base, list_a):
             l_res = []
             for v_element_base in l_base:
@@ -1435,16 +1426,29 @@ class RedRddasModel(object):
                                 l_res.append(l_line)
             return l_res
 
-        # Experiment partial solutions
-        l_partial_solutions = []
+        # group pair attractors by RDDs who are elements
+        array = self.group_signals_pairs
+        header = [elm[0] for elm in array]
+        dicti = {f'{elm[0]}': elm[1] for elm in array}
+        l_list = [[key, dicti[f'{key}']] for key in f_order_groups(header)]
+        self.group_signals_pairs = l_list
 
-        # l_total = [list(range(1,6)),list(range(6,11)),list(range(11,16)),list(range(16,21)),list(range(21,26))]
+        # Fill the list_signal_pairs with the order list
+        self.list_signal_pairs = []
+        for l_element in l_list:
+            self.list_signal_pairs.append(l_element[1])
+
+        # Experiment partial solutions
+        l_partial_solutions_after = []
+        l_partial_solutions_before = []
+
         l_total = self.list_signal_pairs
         l_cartesian_product = l_total[0]
         v_cont = 1
         while v_cont < len(l_total):
+            l_partial_solutions_before.append(l_cartesian_product)
             l_cartesian_product = f_cartesian_product(l_cartesian_product, l_total[v_cont])
-            l_partial_solutions.append(l_cartesian_product)
+            l_partial_solutions_after.append(l_cartesian_product)
             # print("Cartesian")
             # print(l_cartesian_product)
             v_cont = v_cont + 1
@@ -1457,5 +1461,42 @@ class RedRddasModel(object):
         self.attractor_fields = l_cartesian_product
         # print(oRedRddasModel.attractor_fields)
 
-        # return the partial solutions
-        return l_partial_solutions
+        # Analysing the percent between enumerate and pruning methods
+        # partial_solutions = [ iteration = [] ]
+        df_exec_method = pd.DataFrame()
+        l_first_elements = []
+        l_second_elements = []
+        l_base_elements_before = []
+        l_base_elements_after = []
+        l_base_elements_iterative = []
+
+        cont_before = 0
+        len_iterative = 1
+        for iteration in l_partial_solutions_before:
+            l_base_elements_before.append(len(iteration))
+            cont_before = cont_before + 1
+
+        cont_after = 0
+        for iteration in l_partial_solutions_after:
+            print("Begin Iteration")
+            print("# Elements group 1:", len(self.list_signal_pairs[cont_after]), "# Elements group 2:",
+                  len(self.list_signal_pairs[cont_after + 1]), "# Partial Solutions:", len(iteration))
+            for partial_solution in iteration:
+                print("Part :", partial_solution)
+            print("End Iteration")
+            l_first_elements.append(len(self.list_signal_pairs[cont_after]))
+            l_second_elements.append(len(self.list_signal_pairs[cont_after + 1]))
+            l_base_elements_after.append(len(iteration))
+            len_iterative = len_iterative * len(self.list_signal_pairs[cont_after])
+            l_base_elements_iterative.append(len_iterative)
+            cont_after = cont_after + 1
+
+        # Add values to Dataframe as columns
+        df_exec_method['first_list_pairs'] = l_first_elements
+        df_exec_method['second_list_pairs'] = l_second_elements
+        df_exec_method['base_list_before'] = l_base_elements_before
+        df_exec_method['base_list_after'] = l_base_elements_after
+        df_exec_method['base_list_iterative'] = l_base_elements_iterative
+
+        # return method execution
+        return df_exec_method
