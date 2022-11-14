@@ -15,7 +15,7 @@ ray.init(log_to_driver=False, num_cpus=12)
 #capture the time for all the experiment
 v_begin_exp = time.time()
 # Experiment for global relations growth
-n_experiments = 50
+n_experiments = 100
 l_experiments = []
 for cont_experiment in range(1,n_experiments+1):
     print("============================")
@@ -61,14 +61,14 @@ for cont_experiment in range(1,n_experiments+1):
 
         # Calculate the Attractors by RDDA and by Signal
         v_begin_1 = time.time()
-        result = RedRddasModel.calculation_compatible_pairs.remote(o_rdda_model)
+        result = RedRddasModel.calculation_compatible_pairs_ray.remote(o_rdda_model)
         o_rdda_model = ray.get(result)
         v_end_1 = time.time()
         v_time_1 = v_end_1 - v_begin_1
 
         # Calculate the Attractors by RDDA and by Signal with optimized Method
         v_begin_2 = time.time()
-        result = RedRddasModel.assembly_attractor_fields_optimized.remote(o_rdda_model)
+        result = RedRddasModel.assembly_attractor_fields_pruning_ray.remote(o_rdda_model)
         o_rdda_model = ray.get(result)
         v_end_2 = time.time()
         v_time_2 = v_end_2 - v_begin_2
@@ -121,6 +121,6 @@ pf_res = pd.concat(l_experiments, keys=range(1,n_experiments+1), names=["n_sampl
 pf_res.reset_index(drop=True, inplace=True, level=1)
 
 # Save the experiment data in csv, using pandas Dataframe
-path = "data/exp3_global_relations_growth_data50.csv"
+path = "data/exp3_global_relations_growth_data100.csv"
 pf_res.to_csv(path)
 print("Experiment saved in:", path)
