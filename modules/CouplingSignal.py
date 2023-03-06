@@ -206,5 +206,3 @@ class CouplingSignal:
 
         return r_true_table
 
-
-# oCouplingSignal = CouplingSignal(1,2,)
