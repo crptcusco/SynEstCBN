@@ -16,11 +16,11 @@ class CouplingSignal:
         self.true_table = self.process_true_table()
 
     def show(self):
-        print("Network Input : " + str(self.rdda_entrada) + "\n"
-              + "Network Output : " + str(self.rdda_salida) + "\n"
-              + "Variables : " + str(self.l_variaveis_saida) + "\n"
-              + "Name Variable : " + str(self.name_variable) + "\n"
-              + "Coupling Function : " + str(self.acoplament_function) + "\n"
+        print("Network Input : " + str(self.input_network) + "\n"
+              + "Network Output : " + str(self.output_network) + "\n"
+              + "Variables : " + str(self.l_output_variables) + "\n"
+              + "Name Variable : " + str(self.input_variable) + "\n"
+              + "Coupling Function : " + str(self.coupling_function) + "\n"
               + "Truth Table: " + str(self.true_table))
 
     def process_true_table(self):
