@@ -3,22 +3,36 @@ from satispy.solver import Minisat  # Library to resolve SAT
 import ray  # Library to parallelization, distribution and scalability
 
 from modules.CouplingSignal import CouplingSignal
+from modules.VariableCNF import VariableCNF
 
 
 class LocalNetwork:
     def __init__(self, i_network=1, l_variables=[], relations=[]):
         self.i_network = i_network
         self.l_variables = list(l_variables)
-        self.relations = relations
+        self.l_relations = relations
         # calculate properties
+        self.list_of_v_total = []
+        self.description_variables = []
         self.set_of_attractors = []
 
-    ##### IMPORTANTE ####
-    ##### LISTA DE VARIABLES COMPLETA!!!
+        # Extract the external variables from relations
+        for relation in self.l_relations:
+            if relation.input_network == self.i_network:
+                self.list_of_v_total += [relation.input_variable]
+
+        print(f'Network: {self.i_network}, All variables: {self.list_of_v_total}')
 
     def __str__(self):
         res = 'Network: {}, Variables: {}'.format(self.i_network, self.l_variables)
         return res
+
+    def process_description_variables(self, l_var_cnf):
+        # Description of Variables
+        # for variable in self.l_variables:
+        #     cnf_function =
+        #     o_variable_cnf = VariableCNF(variable,cnf_function)
+        pass
 
     def show(self):
         print(f'Network: {self.i_network}, Variables: {self.l_variables}')
@@ -99,7 +113,8 @@ class LocalNetwork:
             for v_transition in range(0, number_of_transitions):
                 # print l_signal_coupling[cont_permutacion]
                 if l_signal_coupling[cont_permutacion] == "0":
-                    boolean_function = boolean_function & -o_network.dic_var_cnf[str(elemento) + "_" + str(v_transition)]
+                    boolean_function = boolean_function & -o_network.dic_var_cnf[
+                        str(elemento) + "_" + str(v_transition)]
                     # print (str(elemento) +"_"+ str(v_transition))
                 else:
                     boolean_function = boolean_function & o_network.dic_var_cnf[str(elemento) + "_" + str(v_transition)]
@@ -126,8 +141,9 @@ class LocalNetwork:
                     else:
                         if (termino[0] != "-"):
                             boolean_expresion_clausule_of_atractors = boolean_expresion_clausule_of_atractors & \
-                                                                      o_network.dic_var_cnf[str(termino_aux) + "_" + str(
-                                                                          number_of_transitions - 1)]
+                                                                      o_network.dic_var_cnf[
+                                                                          str(termino_aux) + "_" + str(
+                                                                              number_of_transitions - 1)]
                         else:
                             boolean_expresion_clausule_of_atractors = boolean_expresion_clausule_of_atractors & - \
                                 o_network.dic_var_cnf[str(termino_aux) + "_" + str(number_of_transitions - 1)]
@@ -240,7 +256,8 @@ class LocalNetwork:
 
             # print l_atractors_clausules
             # REPEAT CODE
-            v_bool_function = o_network.generate_boolean_formulation(o_network, v_num_transitions, l_atractors_clausules,
+            v_bool_function = o_network.generate_boolean_formulation(o_network, v_num_transitions,
+                                                                     l_atractors_clausules,
                                                                      l_signal_coupling)
             m_answer_sat = []
             o_solver = Minisat()
