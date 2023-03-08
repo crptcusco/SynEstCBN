@@ -19,20 +19,21 @@ def main(t_variables=None):
     # 4,5,6,7,16
     # 8,9,10, 17, 18
     # 11, 12, 13, 14
-    t_description_variables = ((1, '2 ∧ 3 '),
-                               (2, '4 ∨ 15 '),
-                               (3, '3 ∨ 1 ∨ 15 '),
-                               (4, '5 ∨ 6 ∨ 7 '),
-                               (5, '6 ∧ 7 ∧ 16 '),
-                               (6, '4 ∧ 5 ∧ 16 '),
-                               (7, '5 ∧ 16 ∨ 7 '),
-                               (8, '9 ∨ 10 ∨ 17 '),
-                               (9, '8 ∨ 18 '),
-                               (10, '8 ∨ 9 '),
-                               (11, '12 ∨ 13 '),
-                               (12, '11 ∨ 13 '),
-                               (13, '14 ∨ 11 ∨ 12 '),
-                               (14, '11 ∧ 12 '))
+
+    t_description_variables = ([(1, [2, 3]),
+                                (2, [4, 15]),
+                                (3, [3, 1, 15])],
+                               [(4, [5, 6, 7]),
+                                (5, [6, 7, 16]),
+                                (6, [4, 5, 16]),
+                                (7, [5, 16, 7])],
+                               [(8, [9, 10, 17]),
+                                (9, [8, 18]),
+                                (10, [8, 9])],
+                               [(11, [12, 13]),
+                                (12, [11, 13]),
+                                (13, [14, 11, 12]),
+                                (14, [11, 12])])
 
     # '∧': operator.and_,
     # '∨': operator.or_,
@@ -71,15 +72,20 @@ def main(t_variables=None):
     o_cbn.show()
 
     # Fill the description from variables
+    for network in o_cbn.l_networks:
+        network.process_description_variables(t_description_variables[network.i_network - 1])
 
     # find the attractors by local networks
     print("------------------------")
     print("List of Attractors")
     print("------------------------")
     o_cbn = CBN.find_attractors(o_cbn)
-    for o_network in o_cbn.l_networks:
-        for attractor in o_network.set_of_attractors:
-            print(attractor)
+
+    print(o_cbn.l_cbn_permutation_attractors)
+
+    # for o_network in o_cbn.l_networks:
+    #     for attractor in o_network.set_of_attractors:
+    #         print(attractor)
 
 
 # Press the green button in the gutter to run the script.

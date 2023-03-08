@@ -15,11 +15,13 @@ class LocalNetwork:
         self.list_of_v_total = []
         self.description_variables = []
         self.set_of_attractors = []
+        self.list_var_extrem = []
 
         # Extract the external variables from relations
         for relation in self.l_relations:
             if relation.input_network == self.i_network:
                 self.list_of_v_total += [relation.input_variable]
+                self.list_var_extrem += [relation.input_variable]
 
         print(f'Network: {self.i_network}, All variables: {self.list_of_v_total}')
 
@@ -27,11 +29,12 @@ class LocalNetwork:
         res = 'Network: {}, Variables: {}'.format(self.i_network, self.l_variables)
         return res
 
-    def process_description_variables(self, l_var_cnf):
+    def process_description_variables(self, description):
         # Description of Variables
-        # for variable in self.l_variables:
-        #     cnf_function =
-        #     o_variable_cnf = VariableCNF(variable,cnf_function)
+        i_var_description = 0
+        for variable in self.l_variables:
+            cnf_function = description[i_var_description]
+            o_variable_cnf = VariableCNF(variable, cnf_function)
         pass
 
     def show(self):
@@ -108,7 +111,7 @@ class LocalNetwork:
 
         # ASSING VALUES FOR PERMUTATIONS
         cont_permutacion = 0
-        for elemento in o_network.list_of_v_exterm:
+        for elemento in o_network.list_var_extrem:
             # print oRDD.list_of_v_exterm
             for v_transition in range(0, number_of_transitions):
                 # print l_signal_coupling[cont_permutacion]
@@ -171,6 +174,9 @@ class LocalNetwork:
                     number_of_times = number_of_times + 1
             return number_of_times
 
+        print("l_signal_coupling")
+        print(l_signal_coupling)
+
         # print "BEGIN TO FIND ATTRACTORS"
         print("NETWORK NUMBER : " + str(o_network.i_network) + " PERMUTATION SIGNAL COUPLING: " + l_signal_coupling)
         # create boolean expression initial with "n" transitions
@@ -182,6 +188,7 @@ class LocalNetwork:
         # REPEAT CODE
         v_bool_function = o_network.generate_boolean_formulation(o_network, v_num_transitions, l_atractors_clausules,
                                                                  l_signal_coupling)
+        print(v_bool_function)
         m_answer_sat = []
         o_solver = Minisat()
         o_solution = o_solver.solve(v_bool_function)
@@ -204,7 +211,7 @@ class LocalNetwork:
             # TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
             for j in range(0, v_num_transitions):
                 matriz_aux_sat = []
-                for i in range(0, o_network.number_of_v_total):
+                for i in range(0, len(o_network.list_of_v_total)):
                     if m_answer_sat[j][i]:
                         matriz_aux_sat.append("1")
                     else:
@@ -215,10 +222,10 @@ class LocalNetwork:
         # BLOCK ATRACTORS
         # REPEAT CODE
 
-        while (len(m_resp_booleana) > 0):
-            # print ("path")
-            # print (m_resp_booleana)
-            # print ("path")
+        while len(m_resp_booleana) > 0:
+            # print("path")
+            # print(m_resp_booleana)
+            # print("path")
             path_solution = []
             for path_trasition in m_resp_booleana:
                 path_solution.append(path_trasition)
@@ -274,12 +281,12 @@ class LocalNetwork:
 
             # BLOCK ATRACTORS
             m_auxiliary_sat = []
-            if (len(m_answer_sat) != 0):
+            if len(m_answer_sat) != 0:
                 # TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
                 for j in range(0, v_num_transitions):
                     matriz_aux_sat = []
                     for i in range(0, o_network.number_of_v_total):
-                        if m_answer_sat[j][i] == True:
+                        if m_answer_sat[j][i]:
                             matriz_aux_sat.append("1")
                         else:
                             matriz_aux_sat.append("0")
@@ -293,3 +300,8 @@ class LocalNetwork:
         # print(" ")
         # print ("END OF FIND ATRACTORS")
         return o_network.set_of_attractors
+
+    def show_permutation_attractors(self):
+        for permutation_attractor in self.list_permutations_attractors:
+            print("Permutation: ", permutation_attractor[0], "Attractors: ")
+            print(permutation_attractor[1])

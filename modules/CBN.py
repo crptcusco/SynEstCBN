@@ -1,19 +1,3 @@
-import random  # generate random numbers
-import networkx as nx  # library to work with graphs
-import igraph as ig
-import matplotlib.pyplot as plt  # library to make draws
-import matplotlib.colors as mco # library who have the list of colors
-import pickle  # library to serialization object
-
-import pandas as pd
-import ray # Library to parallelization, distribution and scalability
-
-# import json # library to serialization object
-# import xml.etree.ElementTree as ET # library to serialization object
-# from igraph.drawing import cairo
-# from igraph import *  # library to make network graphs
-
-from random import randint  # generate random numbers integers
 from itertools import product  # generate combinations of numbers
 
 from modules.LocalNetwork import LocalNetwork
@@ -29,7 +13,7 @@ class CBN(object):
             self.l_networks = kwargs['l_networks']
             self.l_relations = kwargs['l_relations']
 
-        # calculate propierties
+        # calculate properties
         self.l_cbn_permutation_attractors = []
 
     def __str__(self):
@@ -61,11 +45,24 @@ class CBN(object):
         print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
         # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
 
+        for o_network in o_cbn.l_networks:
+            print(o_network.i_network)
+            print(o_network.l_relations)
+
+
         # FIND THE ATTRACTORS FOR EACH RDDA
         for o_network in o_cbn.l_networks:
+
             # GENERATE THE POSSIBLES COMBINATIONS ACCORDING TO THE COUPLING SIGNALS
             l_permutation = product(list('01'), repeat=len(o_network.l_relations))
+            print("relations")
+            print(o_network.l_relations)
+            print("relations")
+            print(l_permutation)
             for v_permutation in l_permutation:
+                print("v_permutation")
+                print(v_permutation)
+                print("end")
                 # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
                 # EST [RDDA Object, permutation,[List of attractors]]
                 o_cbn.l_cbn_permutation_attractors.append([o_network, ''.join(v_permutation), LocalNetwork.find_attractors(o_network, ''.join(v_permutation))])
