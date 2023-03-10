@@ -7,21 +7,18 @@ from modules.VariableCNF import VariableCNF
 
 
 class LocalNetwork:
-    def __init__(self, i_network=1, l_variables=[], relations=[]):
+    def __init__(self, i_network=1, l_variables=None):
+        if l_variables is None:
+            l_variables = []
         self.i_network = i_network
         self.l_variables = list(l_variables)
-        self.l_relations = relations
+
         # calculate properties
         self.list_of_v_total = []
         self.description_variables = []
         self.set_of_attractors = []
         self.list_var_extrem = []
-
-        # Extract the external variables from relations
-        for relation in self.l_relations:
-            if relation.input_network == self.i_network:
-                self.list_of_v_total += [relation.input_variable]
-                self.list_var_extrem += [relation.input_variable]
+        self.dic_var_cnf = {}
 
         print(f'Network: {self.i_network}, All variables: {self.list_of_v_total}')
 
@@ -116,8 +113,7 @@ class LocalNetwork:
             for v_transition in range(0, number_of_transitions):
                 # print l_signal_coupling[cont_permutacion]
                 if l_signal_coupling[cont_permutacion] == "0":
-                    boolean_function = boolean_function & -o_network.dic_var_cnf[
-                        str(elemento) + "_" + str(v_transition)]
+                    boolean_function = boolean_function & -o_network.dic_var_cnf[str(elemento) + "_" + str(v_transition)]
                     # print (str(elemento) +"_"+ str(v_transition))
                 else:
                     boolean_function = boolean_function & o_network.dic_var_cnf[str(elemento) + "_" + str(v_transition)]
@@ -144,9 +140,8 @@ class LocalNetwork:
                     else:
                         if (termino[0] != "-"):
                             boolean_expresion_clausule_of_atractors = boolean_expresion_clausule_of_atractors & \
-                                                                      o_network.dic_var_cnf[
-                                                                          str(termino_aux) + "_" + str(
-                                                                              number_of_transitions - 1)]
+                                                                      o_network.dic_var_cnf[str(termino_aux) + "_" + str(
+                                                                          number_of_transitions - 1)]
                         else:
                             boolean_expresion_clausule_of_atractors = boolean_expresion_clausule_of_atractors & - \
                                 o_network.dic_var_cnf[str(termino_aux) + "_" + str(number_of_transitions - 1)]
@@ -166,16 +161,13 @@ class LocalNetwork:
         return boolean_function
 
     def find_attractors(o_network, l_signal_coupling):
-        def count_state_repeat(v_estate, path):
+        def countStateRepeat(v_estate, path_solution):
             # input type [[],[],...[]]
             number_of_times = 0
-            for v_element in path:
+            for v_element in path_solution:
                 if v_element == v_estate:
                     number_of_times = number_of_times + 1
             return number_of_times
-
-        print("l_signal_coupling")
-        print(l_signal_coupling)
 
         # print "BEGIN TO FIND ATTRACTORS"
         print("NETWORK NUMBER : " + str(o_network.i_network) + " PERMUTATION SIGNAL COUPLING: " + l_signal_coupling)
@@ -189,43 +181,43 @@ class LocalNetwork:
         v_bool_function = o_network.generate_boolean_formulation(o_network, v_num_transitions, l_atractors_clausules,
                                                                  l_signal_coupling)
         print(v_bool_function)
-        m_answer_sat = []
+        m_respuesta_sat = []
         o_solver = Minisat()
         o_solution = o_solver.solve(v_bool_function)
 
         # print(oRDD.number_of_v_total)
         if o_solution.success:
             for j in range(0, v_num_transitions):
-                m_answer_sat.append([])
+                m_respuesta_sat.append([])
                 for i in o_network.list_of_v_total:
                     # print("_________________________________________")
                     # print("Variable de Erro:", f"{i}_{j}")
                     # print(v_bool_function)
-                    m_answer_sat[j].append(o_solution[o_network.dic_var_cnf[f'{i}_{j}']])
+                    m_respuesta_sat[j].append(o_solution[o_network.dic_var_cnf[f'{i}_{j}']])
         else:
             print("The expression cannot be satisfied")
 
-        # BLOCK ATTRACTORS
-        m_auxiliary_sat = []
-        if len(m_answer_sat) != 0:
+        # BLOCK ATRACTORS
+        m_auxliar_sat = []
+        if (len(m_respuesta_sat) != 0):
             # TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
             for j in range(0, v_num_transitions):
                 matriz_aux_sat = []
                 for i in range(0, len(o_network.list_of_v_total)):
-                    if m_answer_sat[j][i]:
+                    if m_respuesta_sat[j][i] == True:
                         matriz_aux_sat.append("1")
                     else:
                         matriz_aux_sat.append("0")
-                m_auxiliary_sat.append(matriz_aux_sat)
+                m_auxliar_sat.append(matriz_aux_sat)
             # m_resp_booleana = m_auxliar_sat
-        m_resp_booleana = m_auxiliary_sat
+        m_resp_booleana = m_auxliar_sat
         # BLOCK ATRACTORS
         # REPEAT CODE
 
-        while len(m_resp_booleana) > 0:
-            # print("path")
-            # print(m_resp_booleana)
-            # print("path")
+        while (len(m_resp_booleana) > 0):
+            # print ("path")
+            # print (m_resp_booleana)
+            # print ("path")
             path_solution = []
             for path_trasition in m_resp_booleana:
                 path_solution.append(path_trasition)
@@ -234,7 +226,7 @@ class LocalNetwork:
             l_news_estates_atractor = []
             # check atractors
             for v_state in path_solution:
-                v_state_count = count_state_repeat(v_state, path_solution)
+                v_state_count = countStateRepeat(v_state, path_solution)
                 if (v_state_count > 1):
                     atractor_begin = path_solution.index(v_state) + 1
                     atractor_end = path_solution[atractor_begin:].index(v_state)
@@ -263,36 +255,35 @@ class LocalNetwork:
 
             # print l_atractors_clausules
             # REPEAT CODE
-            v_bool_function = o_network.generate_boolean_formulation(o_network, v_num_transitions,
-                                                                     l_atractors_clausules,
+            v_bool_function = o_network.generate_boolean_formulation(o_network, v_num_transitions, l_atractors_clausules,
                                                                      l_signal_coupling)
-            m_answer_sat = []
+            m_respuesta_sat = []
             o_solver = Minisat()
             o_solution = o_solver.solve(v_bool_function)
 
             if o_solution.success:
                 for j in range(0, v_num_transitions):
-                    m_answer_sat.append([])
+                    m_respuesta_sat.append([])
                     for i in o_network.list_of_v_total:
-                        m_answer_sat[j].append(o_solution[o_network.dic_var_cnf[f'{i}_{j}']])
+                        m_respuesta_sat[j].append(o_solution[o_network.dic_var_cnf[f'{i}_{j}']])
             else:
                 # print(" ")
                 print("The expression cannot be satisfied")
 
             # BLOCK ATRACTORS
-            m_auxiliary_sat = []
-            if len(m_answer_sat) != 0:
+            m_auxliar_sat = []
+            if (len(m_respuesta_sat) != 0):
                 # TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
                 for j in range(0, v_num_transitions):
                     matriz_aux_sat = []
                     for i in range(0, o_network.number_of_v_total):
-                        if m_answer_sat[j][i]:
+                        if m_respuesta_sat[j][i] == True:
                             matriz_aux_sat.append("1")
                         else:
                             matriz_aux_sat.append("0")
-                    m_auxiliary_sat.append(matriz_aux_sat)
+                    m_auxliar_sat.append(matriz_aux_sat)
                 # m_resp_booleana = m_auxliar_sat
-            m_resp_booleana = m_auxiliary_sat
+            m_resp_booleana = m_auxliar_sat
             # BLOCK ATRACTORS
             # REPEAT CODE
 

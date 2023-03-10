@@ -45,20 +45,10 @@ class CBN(object):
         print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
         # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
 
-        for o_network in o_cbn.l_networks:
-            print(o_network.i_network)
-            print(o_network.l_relations)
-
-
         # FIND THE ATTRACTORS FOR EACH RDDA
         for o_network in o_cbn.l_networks:
-
             # GENERATE THE POSSIBLES COMBINATIONS ACCORDING TO THE COUPLING SIGNALS
-            l_permutation = product(list('01'), repeat=len(o_network.l_relations))
-            print("relations")
-            print(o_network.l_relations)
-            print("relations")
-            print(l_permutation)
+            l_permutation = product(list('01'), repeat=len(o_network.list_var_extrem))
             for v_permutation in l_permutation:
                 print("v_permutation")
                 print(v_permutation)

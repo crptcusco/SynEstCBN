@@ -69,11 +69,20 @@ def main(t_variables=None):
     print("Coupling Boolean Network")
     print("========================")
     o_cbn = CBN(n_networks=len(t_networks), l_networks=l_networks, l_relations=l_relations)
-    o_cbn.show()
 
-    # Fill the description from variables
-    for network in o_cbn.l_networks:
-        network.process_description_variables(t_description_variables[network.i_network - 1])
+    for o_network in o_cbn.l_networks:
+        # Fill the description from variables
+        o_network.process_description_variables(t_description_variables[o_network.i_network - 1])
+        print("Variable description from Network:", o_network.i_network)
+        print(t_description_variables[o_network.i_network - 1])
+        # Fill the relations for every network
+        for relation in o_cbn.l_relations:
+            if relation.input_network == o_network.i_network:
+                o_network.list_of_v_total += [relation.input_variable]
+                o_network.list_var_extrem += [relation.input_variable]
+
+    # Show the cbn and his networks
+    o_cbn.show()
 
     # find the attractors by local networks
     print("------------------------")
@@ -81,6 +90,7 @@ def main(t_variables=None):
     print("------------------------")
     o_cbn = CBN.find_attractors(o_cbn)
 
+    print("Show the List of attractors")
     print(o_cbn.l_cbn_permutation_attractors)
 
     # for o_network in o_cbn.l_networks:
