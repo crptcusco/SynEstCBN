@@ -20,20 +20,20 @@ def main(t_variables=None):
     # 8,9,10, 17, 18
     # 11, 12, 13, 14
 
-    t_description_variables = ([(1, [2, 3]),
-                                (2, [4, 15]),
-                                (3, [3, 1, 15])],
-                               [(4, [5, 6, 7]),
-                                (5, [6, 7, 16]),
-                                (6, [4, 5, 16]),
-                                (7, [5, 16, 7])],
-                               [(8, [9, 10, 17]),
-                                (9, [8, 18]),
-                                (10, [8, 9])],
-                               [(11, [12, 13]),
-                                (12, [11, 13]),
-                                (13, [14, 11, 12]),
-                                (14, [11, 12])])
+    t_description_variables = ([(1, [[2, 3]]),
+                                (2, [[1, -15]]),
+                                (3, [[3, -1, 15]])],
+                               [(4, [[-5, 6, 7]]),
+                                (5, [[6, 7, -16]]),
+                                (6, [[-4, 5, 16]]),
+                                (7, [[-5, 16, 7]])],
+                               [(8, [[9, 10, 17]]),
+                                (9, [[8, 18]]),
+                                (10, [[8, 9]])],
+                               [(11, [[-12, 13]]),
+                                (12, [[-11, 13]]),
+                                (13, [[14, 11, 12]]),
+                                (14, [[11, -12]])])
 
     # '∧': operator.and_,
     # '∨': operator.or_,
@@ -88,10 +88,11 @@ def main(t_variables=None):
     print("------------------------")
     print("List of Attractors")
     print("------------------------")
-    o_cbn = CBN.find_attractors(o_cbn)
+    o_cbn = CBN.find_attractors_rddas(o_cbn)
 
     print("Show the List of attractors")
     print(o_cbn.l_cbn_permutation_attractors)
+    o_cbn.show_local_networks_attractors()
 
     # for o_network in o_cbn.l_networks:
     #     for attractor in o_network.set_of_attractors:

@@ -14,7 +14,7 @@ class LocalNetwork:
         self.l_variables = list(l_variables)
 
         # calculate properties
-        self.list_of_v_total = []
+        self.list_of_v_total = list(l_variables)
         self.description_variables = []
         self.set_of_attractors = []
         self.list_var_extrem = []
@@ -28,17 +28,21 @@ class LocalNetwork:
 
     def process_description_variables(self, description):
         # Description of Variables
+        description_variables = []
         i_var_description = 0
         for variable in self.l_variables:
-            cnf_function = description[i_var_description]
+            cnf_function = description[i_var_description][1]
             o_variable_cnf = VariableCNF(variable, cnf_function)
-        pass
+            description_variables.append(o_variable_cnf)
+            i_var_description += 1
+
+        self.description_variables = description_variables
 
     def show(self):
         print(f'Network: {self.i_network}, Variables: {self.l_variables}')
 
     @staticmethod
-    def generate_boolean_formulation(o_network, number_of_transitions, l_atractors_clausules, l_signal_coupling):
+    def generateBooleanFormulationSatispy(o_network, number_of_transitions, l_atractors_clausules, l_signal_coupling):
         # create dictionary of cnf variables!!
         for variable in o_network.list_of_v_total:
             for transition_c in range(0, number_of_transitions):
@@ -113,7 +117,8 @@ class LocalNetwork:
             for v_transition in range(0, number_of_transitions):
                 # print l_signal_coupling[cont_permutacion]
                 if l_signal_coupling[cont_permutacion] == "0":
-                    boolean_function = boolean_function & -o_network.dic_var_cnf[str(elemento) + "_" + str(v_transition)]
+                    boolean_function = boolean_function & -o_network.dic_var_cnf[
+                        str(elemento) + "_" + str(v_transition)]
                     # print (str(elemento) +"_"+ str(v_transition))
                 else:
                     boolean_function = boolean_function & o_network.dic_var_cnf[str(elemento) + "_" + str(v_transition)]
@@ -140,8 +145,9 @@ class LocalNetwork:
                     else:
                         if (termino[0] != "-"):
                             boolean_expresion_clausule_of_atractors = boolean_expresion_clausule_of_atractors & \
-                                                                      o_network.dic_var_cnf[str(termino_aux) + "_" + str(
-                                                                          number_of_transitions - 1)]
+                                                                      o_network.dic_var_cnf[
+                                                                          str(termino_aux) + "_" + str(
+                                                                              number_of_transitions - 1)]
                         else:
                             boolean_expresion_clausule_of_atractors = boolean_expresion_clausule_of_atractors & - \
                                 o_network.dic_var_cnf[str(termino_aux) + "_" + str(number_of_transitions - 1)]
@@ -160,7 +166,7 @@ class LocalNetwork:
         # print(boolean_function)
         return boolean_function
 
-    def find_attractors(o_network, l_signal_coupling):
+    def findLocalAtractorsSATSatispy(o_network, l_signal_coupling):
         def countStateRepeat(v_estate, path_solution):
             # input type [[],[],...[]]
             number_of_times = 0
@@ -178,8 +184,9 @@ class LocalNetwork:
         l_atractors_clausules = []
 
         # REPEAT CODE
-        v_bool_function = o_network.generate_boolean_formulation(o_network, v_num_transitions, l_atractors_clausules,
-                                                                 l_signal_coupling)
+        v_bool_function = o_network.generateBooleanFormulationSatispy(o_network, v_num_transitions,
+                                                                      l_atractors_clausules,
+                                                                      l_signal_coupling)
         print(v_bool_function)
         m_respuesta_sat = []
         o_solver = Minisat()
@@ -204,7 +211,7 @@ class LocalNetwork:
             for j in range(0, v_num_transitions):
                 matriz_aux_sat = []
                 for i in range(0, len(o_network.list_of_v_total)):
-                    if m_respuesta_sat[j][i] == True:
+                    if m_respuesta_sat[j][i]:
                         matriz_aux_sat.append("1")
                     else:
                         matriz_aux_sat.append("0")
@@ -255,8 +262,9 @@ class LocalNetwork:
 
             # print l_atractors_clausules
             # REPEAT CODE
-            v_bool_function = o_network.generate_boolean_formulation(o_network, v_num_transitions, l_atractors_clausules,
-                                                                     l_signal_coupling)
+            v_bool_function = o_network.generateBooleanFormulationSatispy(o_network, v_num_transitions,
+                                                                          l_atractors_clausules,
+                                                                          l_signal_coupling)
             m_respuesta_sat = []
             o_solver = Minisat()
             o_solution = o_solver.solve(v_bool_function)
@@ -276,8 +284,8 @@ class LocalNetwork:
                 # TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
                 for j in range(0, v_num_transitions):
                     matriz_aux_sat = []
-                    for i in range(0, o_network.number_of_v_total):
-                        if m_respuesta_sat[j][i] == True:
+                    for i in range(0, len(o_network.list_of_v_total)):
+                        if m_respuesta_sat[j][i]:
                             matriz_aux_sat.append("1")
                         else:
                             matriz_aux_sat.append("0")
@@ -292,7 +300,4 @@ class LocalNetwork:
         # print ("END OF FIND ATRACTORS")
         return o_network.set_of_attractors
 
-    def show_permutation_attractors(self):
-        for permutation_attractor in self.list_permutations_attractors:
-            print("Permutation: ", permutation_attractor[0], "Attractors: ")
-            print(permutation_attractor[1])
+

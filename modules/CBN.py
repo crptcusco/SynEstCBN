@@ -16,6 +16,7 @@ class CBN(object):
         # calculate properties
         self.l_cbn_permutation_attractors = []
 
+
     def __str__(self):
         res = 'Number of Networks: {}, Generated: {}'.format(self.n_networks, self.generated)
         return res
@@ -40,8 +41,30 @@ class CBN(object):
     def generate_cbn(self):
         pass
 
+    # @staticmethod
+    # def find_attractors(o_cbn):
+    #     print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
+        # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
+
+        # # FIND THE ATTRACTORS FOR EACH RDDA
+        # for o_network in o_cbn.l_networks:
+        #     # GENERATE THE POSSIBLES COMBINATIONS ACCORDING TO THE COUPLING SIGNALS
+        #     l_permutation = product(list('01'), repeat=len(o_network.list_var_extrem))
+        #     for v_permutation in l_permutation:
+        #         print("v_permutation")
+        #         print(v_permutation)
+        #         print("end")
+        #         # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
+        #         # EST [RDDA Object, permutation,[List of attractors]]
+        #         o_cbn.l_cbn_permutation_attractors.append([o_network, ''.join(v_permutation),
+        #                                                    LocalNetwork.find_attractors(o_network,
+        #                                                                                 ''.join(v_permutation))])
+        # print("END CALCULATE ALL LOCAL ATTRACTORS")
+        # print("######################################################")
+        # return o_cbn
+
     @staticmethod
-    def find_attractors(o_cbn):
+    def find_attractors_rddas(o_cbn):
         print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
         # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
 
@@ -50,13 +73,20 @@ class CBN(object):
             # GENERATE THE POSSIBLES COMBINATIONS ACCORDING TO THE COUPLING SIGNALS
             l_permutation = product(list('01'), repeat=len(o_network.list_var_extrem))
             for v_permutation in l_permutation:
-                print("v_permutation")
-                print(v_permutation)
-                print("end")
                 # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
                 # EST [RDDA Object, permutation,[List of attractors]]
-                o_cbn.l_cbn_permutation_attractors.append([o_network, ''.join(v_permutation), LocalNetwork.find_attractors(o_network, ''.join(v_permutation))])
+                o_cbn.l_cbn_permutation_attractors.append([o_network, ''.join(v_permutation),
+                                                            LocalNetwork.findLocalAtractorsSATSatispy(o_network,
+                                                                                                      ''.join(
+                                                                                                          v_permutation))])
         print("END CALCULATE ALL LOCAL ATTRACTORS")
         print("######################################################")
         return o_cbn
+
+    def show_local_networks_attractors(self):
+        for permutation_attractor in self.l_cbn_permutation_attractors:
+            print("Network: ", permutation_attractor[0].i_network)
+            print("Permutation: ", permutation_attractor[1], " - Attractors: ")
+            for attractor in permutation_attractor[2]:
+                print(attractor)
 
