@@ -71,7 +71,7 @@ class CBN(object):
         # FIND THE ATTRACTORS FOR EACH RDDA
         for o_network in o_cbn.l_networks:
             # GENERATE THE POSSIBLES COMBINATIONS ACCORDING TO THE COUPLING SIGNALS
-            l_permutation = product(list('01'), repeat=len(o_network.list_var_extrem))
+            l_permutation = product(list('01'), repeat=len(o_network.list_external_var))
             for v_permutation in l_permutation:
                 # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
                 # EST [RDDA Object, permutation,[List of attractors]]

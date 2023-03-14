@@ -20,8 +20,8 @@ def main(t_variables=None):
     # 8,9,10, 17, 18
     # 11, 12, 13, 14
 
-    t_description_variables = ([(1, [[2, 3]]),
-                                (2, [[1, -15]]),
+    t_description_variables = ([(1, [[2, 3], [1, -15]]),
+                                (2, [[1, 15]]),
                                 (3, [[3, -1, 15]])],
                                [(4, [[-5, 6, 7]]),
                                 (5, [[6, 7, -16]]),
@@ -79,7 +79,7 @@ def main(t_variables=None):
         for relation in o_cbn.l_relations:
             if relation.input_network == o_network.i_network:
                 o_network.list_of_v_total += [relation.input_variable]
-                o_network.list_var_extrem += [relation.input_variable]
+                o_network.list_external_var += [relation.input_variable]
 
     # Show the cbn and his networks
     o_cbn.show()
