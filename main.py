@@ -90,13 +90,22 @@ def main(t_variables=None):
     print("------------------------")
     o_cbn = CBN.find_attractors_rddas(o_cbn)
 
+    # Show the attractors of the RDDs by Signal
     print("Show the List of attractors")
-    print(o_cbn.l_cbn_permutation_attractors)
     o_cbn.show_local_networks_attractors()
 
-    # for o_network in o_cbn.l_networks:
-    #     for attractor in o_network.set_of_attractors:
-    #         print(attractor)
+    # Calculation the Attractor Pairs
+    o_cbn = CBN.calculation_compatible_pairs(o_cbn)
+
+    # Show the list of attractor pairs
+    o_cbn.show_attractor_pairs()
+
+    # # Assembly the attractor fields
+    # l_partial_paths = o_rdda.assembly_attractor_fields_pruning(o_rdda)
+    #
+    # # Show the list of attractor fields
+    # o_rdda.show_attractor_fields_detail()
+
 
 
 # Press the green button in the gutter to run the script.
