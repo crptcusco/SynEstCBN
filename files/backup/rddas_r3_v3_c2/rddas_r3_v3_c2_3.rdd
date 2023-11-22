@@ -1,0 +1,16 @@
+c
+c start with comments
+c
+c r 2
+c v 3 2 5
+c i 7 8 9
+c e 1 2
+p cnf 7 2
+1 2 -7 0
+8 9 0
+p cnf 8 2
+1 -8 9 0
+-1 -8 0
+p cnf 9 2
+-2 -7 8 0
+1 -8 0

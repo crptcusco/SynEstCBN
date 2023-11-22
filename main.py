@@ -1,9 +1,9 @@
-from modules.CBN import CBN
-from modules.CouplingSignal import CouplingSignal
-from modules.LocalNetwork import LocalNetwork
+from classes.cbnetwork import CBN
+from classes.directededge import SignalModel
+from classes.localnetwork import RddaModel
 
 
-def main(t_variables=None):
+def main():
     # Initial Parameters
     print("BEGIN")
     t_networks = [1, 2, 3, 4]
@@ -48,7 +48,7 @@ def main(t_variables=None):
     l_networks = []
     for i_network in t_networks:
         # generate the Boolean Networks
-        o_local_network = LocalNetwork(i_network=i_network, l_variables=t_variables[i_network - 1])
+        o_local_network = RddaModel(i_network, t_variables[i_network - 1])
         l_networks.append(o_local_network)
         print(o_local_network)
 
@@ -59,8 +59,8 @@ def main(t_variables=None):
     for relation in t_relations:
         coupling_function = " " + " ∨ ".join(list(map(str, t_var_output[i_relation]))) + " "
         print(coupling_function)
-        o_coupling_signal = CouplingSignal(relation[1], relation[0], t_var_output[i_relation],
-                                           t_var_input[i_relation], coupling_function)
+        o_coupling_signal = SignalModel(relation[1], relation[0], t_var_output[i_relation],
+                                        t_var_input[i_relation], coupling_function)
         l_relations.append(o_coupling_signal)
         i_relation += 1
 
@@ -68,7 +68,7 @@ def main(t_variables=None):
     print("========================")
     print("Coupling Boolean Network")
     print("========================")
-    o_cbn = CBN(n_networks=len(t_networks), l_networks=l_networks, l_relations=l_relations)
+    o_cbn = CBN()
 
     for o_network in o_cbn.l_networks:
         # Fill the description from variables
@@ -105,6 +105,7 @@ def main(t_variables=None):
     #
     # # Show the list of attractor fields
     # o_rdda.show_attractor_fields_detail()
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':

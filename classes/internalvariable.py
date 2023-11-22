@@ -1,4 +1,5 @@
-class VariableCNF:
+# VARIABLE MODEL ONLY HAVE NUMBER, VARIABLE_NAME, INTERACTORS LIST, CNF FUNCTION
+class VariableModel:
     name_variable = 0
     list_interactors = []
     cnf_function = []

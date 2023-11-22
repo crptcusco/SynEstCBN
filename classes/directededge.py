@@ -1,26 +1,27 @@
 import re  # analysis of regular expressions
 import operator  # unary operator management
+import sys  # allows to use functions for interaction with the system
 
 from string import ascii_lowercase, ascii_uppercase  # import the list of uppercase and lowercase letters
 from itertools import product  # generate combinations of numbers
 from collections import namedtuple  # structures like trees
 
 
-class CouplingSignal:
-    def __init__(self, input_network, output_network, l_output_variables, input_variable, coupling_function):
-        self.input_network = input_network
-        self.output_network = output_network
-        self.l_output_variables = l_output_variables
-        self.input_variable = input_variable
-        self.coupling_function = coupling_function
+class SignalModel(object):
+    def __init__(self, rdda_entrada, rdda_salida, l_variaveis_saida, name_variable, acoplament_function):
+        self.rdda_entrada = rdda_entrada
+        self.rdda_salida = rdda_salida
+        self.l_variaveis_saida = l_variaveis_saida
+        self.name_variable = name_variable
+        self.acoplament_function = acoplament_function
         self.true_table = self.process_true_table()
 
     def show(self):
-        print("Network Input : " + str(self.input_network) + "\n"
-              + "Network Output : " + str(self.output_network) + "\n"
-              + "Variables : " + str(self.l_output_variables) + "\n"
-              + "Name Variable : " + str(self.input_variable) + "\n"
-              + "Coupling Function : " + str(self.coupling_function) + "\n"
+        print("Network Input : " + str(self.rdda_entrada) + "\n"
+              + "Network Output : " + str(self.rdda_salida) + "\n"
+              + "Variables : " + str(self.l_variaveis_saida) + "\n"
+              + "Name Variable : " + str(self.name_variable) + "\n"
+              + "Coupling Function : " + str(self.acoplament_function) + "\n"
               + "Truth Table: " + str(self.true_table))
 
     def process_true_table(self):
@@ -167,19 +168,19 @@ class CouplingSignal:
 
         dict_aux_var_saida = {}
         cont_aux_abecedario = 0
-        for variable_saida in self.l_output_variables:
-            dict_aux_var_saida[" " + str(variable_saida) + " "] = l_abecedario[cont_aux_abecedario]
+        for variable_saida in self.l_variaveis_saida:
+            dict_aux_var_saida[" "+str(variable_saida)+" "] = l_abecedario[cont_aux_abecedario]
             cont_aux_abecedario = cont_aux_abecedario + 1
 
         # generate combinations of the output signal
         l_permutations = []
-        for v_permutacion in product([True, False], repeat=len(self.l_output_variables)):
+        for v_permutacion in product([True, False], repeat=len(self.l_variaveis_saida)):
             l_permutations.append(v_permutacion)
 
         # process each of the permutations we simply have to evaluate and solve
         for c_permutation in l_permutations:
             aux_dictionary = dict(zip(dict_aux_var_saida.values(), c_permutation))
-            aux_acoplament_function = self.coupling_function
+            aux_acoplament_function = self.acoplament_function
             for aux_element in dict_aux_var_saida.keys():
                 aux_acoplament_function = aux_acoplament_function.replace(str(aux_element),
                                                                           str(dict_aux_var_saida[aux_element]))
@@ -205,4 +206,3 @@ class CouplingSignal:
         # sys.exit()
 
         return r_true_table
-
