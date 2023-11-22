@@ -106,8 +106,6 @@ def main(t_variables=None):
     # # Show the list of attractor fields
     # o_rdda.show_attractor_fields_detail()
 
-
-
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
