@@ -20,7 +20,7 @@ oRedRddasModel = RedRddasModel(n_of_rddas, n_of_variables_rdda, n_of_signals_rdd
 
 # generate the RDDAs
 print("generating the rddas ...")
-oRedRddasModel.generate_rddas(type_network=type_network)
+oRedRddasModel.generate_local_networks(type_network=type_network)
 
 # Save the Network of RDDAs in a Pickle file
 RedRddasModel.save_file_pickle(oRedRddasModel, path)

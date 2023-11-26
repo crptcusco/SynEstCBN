@@ -15,7 +15,7 @@ def findAtractorsSATGlobal(self):
             for j in range(0,number_of_transitions):
                 matriz_respuesta_sat.append([])
                 for i in self.l_of_v_total:
-                    matriz_respuesta_sat[j].append(solution[self.dic_var_cnf[str(i)+"_"+str(j)]])
+                    matriz_respuesta_sat[j].append(solution[self.d_var_cnf[str(i) + "_" + str(j)]])
         else:
             print ("The expression cannot be satisfied")
 
@@ -72,9 +72,9 @@ def findAtractorsSATGlobal(self):
                 for estate_atractor in clausule_atractor:
                     print cont_variable
                     if (estate_atractor == "0"):
-                        clausule_variable.append("-" + str(self.list_of_v_intern[cont_variable]))
+                        clausule_variable.append("-" + str(self.l_var_intern[cont_variable]))
                     else:
-                        clausule_variable.append(str(self.list_of_v_intern[cont_variable]))
+                        clausule_variable.append(str(self.l_var_intern[cont_variable]))
                     cont_variable = cont_variable + 1
                 list_clausules_atractors.append(clausule_variable)
 
@@ -90,7 +90,7 @@ def findAtractorsSATGlobal(self):
                 for j in range(0,number_of_transitions):
                     matriz_respuesta_sat.append([])
                     for i in self.l_of_v_total:
-                        matriz_respuesta_sat[j].append(solution[self.dic_var_cnf[str(i)+"_"+str(j)]])
+                        matriz_respuesta_sat[j].append(solution[self.d_var_cnf[str(i) + "_" + str(j)]])
             else:
                 print ("The expression cannot be satisfied")
     

@@ -23,7 +23,6 @@ class ExperimentModel(object):
 
     @staticmethod
     def save_file_pickle(o_experiment, v_path):
-        # o_experiment_model.show()
         # save information about the RDDA
         with open(v_path + ".pickle", 'wb') as f:
             # Pickle the 'data' dictionary using the highest protocol available.
@@ -34,7 +33,6 @@ class ExperimentModel(object):
     @staticmethod
     def load_file_pickle(v_path):
         with open(v_path, 'rb') as f:
-            # The protocol version used is detected automatically, so we do not
-            # have to specify it.
+            # The protocol version used is detected automatically, so we do not have to specify it.
             data = pickle.load(f)
             return data

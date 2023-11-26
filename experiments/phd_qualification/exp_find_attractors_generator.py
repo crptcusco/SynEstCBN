@@ -54,7 +54,7 @@ for cont_experiment in range(1, n_samples + 1):
 
         # Generate the RDDs
         print("generating the rdds ...")
-        oRedRddasModel.generate_rddas(type_network=type_network)
+        oRedRddasModel.generate_local_networks(type_network=type_network)
 
         # Calculate the Attractors by RDDA and by Signal
         v_begin_0 = time.time()

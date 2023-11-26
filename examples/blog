@@ -1,0 +1,66 @@
+#
+    #     print("All the attractors are computed")
+    #     print("===============================")
+
+    #     # # Evaluate the signals that don't have input coupling signals
+    #     # l_local_network_without_signals = []
+    #     # for o_local_network in self.l_local_networks:
+    #     #     if not o_local_network.l_input_signals:
+    #     #         l_local_network_without_signals.append(o_local_network.index)
+    #     # print(l_local_network_without_signals)
+    #
+    #     # print(heap)
+    #
+    # def evaluate_cbn_topology(self):
+    #     # Find attractors
+    #     # create a directed graph
+    #     o_graph = nx.DiGraph()
+    #
+    #     # add edges to the graph
+    #     for o_local_network in self.l_local_networks:
+    #         for o_input_signal in o_local_network.l_input_signals:
+    #             print("Add edge:", o_input_signal.output_local_network, "-", o_input_signal.input_local_network, ':', 0)
+    #             o_graph.add_edge(o_input_signal.output_local_network, o_input_signal.input_local_network, weight=0)
+    #
+    #     # graph have cycles or not
+    #     is_acyclic = nx.is_directed_acyclic_graph(o_graph)
+    #     if is_acyclic:
+    #         # make topological order
+    #         topological_order = list(nx.topological_sort(o_graph))
+    #         print("The graph is no cycled - Topological order:", topological_order)
+    #     else:
+    #         print("The graph is cycled - you have to use other strategy ... using heaps")
+    #
+    #
+    #
+
+    # # utils function
+    # @staticmethod
+    # def send_text(a_kind, a_text, a_type):
+    #     if a_type == 1:
+    #         print(a_text)
+    #     if a_type == 2 and a_kind == 'ERROR':
+    #         print(a_text)
+    #     if a_type == 3 and a_kind == 'INFO':
+    #         print(a_text)
+    #     if a_type == 4 and a_kind == 'MESSAGE':
+    #         print(a_text)
+
+
+            # # see the lind of every coupling signals
+        # l_index_output_signals = []
+        # for o_directed_edge in self.l_directed_edges:
+        #     print(o_directed_edge.input_local_network, "->", o_directed_edge.output_local_network,
+        #           "Kind signal:", o_directed_edge.kind_signal)
+        #     print("Index:", o_directed_edge.index_variable_signal, "->", o_directed_edge.kind_signal)
+        #     l_index_output_signals.append(o_directed_edge.index_variable_signal)
+
+        # for t_edge in l_edges:
+    #     coupling_function = " " + " ∨ ".join(list(map(str, l_output_variables))) + " "
+    #     o_directed_edge = DirectedEdge(o_local_network.index,
+    #                                    o_local_network_co.index,
+    #                                    l_output_variables,
+    #                                    v_cont_var,
+    #                                    coupling_function)
+    #     # generate the object of the directed edge
+    #     o_directed_edge = DirectedEdge(t_edge[0], t_edge[1], )

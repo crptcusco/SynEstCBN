@@ -1,12 +1,10 @@
-# VARIABLE MODEL ONLY HAVE NUMBER, VARIABLE_NAME, INTERACTORS LIST, CNF FUNCTION
-class VariableModel:
-    name_variable = 0
-    list_interactors = []
-    cnf_function = []
-
-    def __init__(self, name_variable, cnf_function):
-        self.name_variable = int(name_variable)
-        self.cnf_function = cnf_function
+class InternalVariable:
+    def __init__(self, index, cnf_function=None):
+        if not isinstance(cnf_function, list) and cnf_function is not None:
+            raise TypeError("cnf_function must be a list or None")
+        self.index = index
+        self.cnf_function = cnf_function if cnf_function is not None else []
 
     def show(self):
-        print("V: " + str(self.name_variable) + " CNF :" + str(self.cnf_function))
+        print("Index: " + str(self.index) + " Function in CNF :" + str(self.cnf_function))
+

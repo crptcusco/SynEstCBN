@@ -7,7 +7,7 @@ from itertools import product  # generate combinations of numbers
 from collections import namedtuple  # structures like trees
 
 
-class SignalModel(object):
+class DirectedEdge(object):
     def __init__(self, rdda_entrada, rdda_salida, l_variaveis_saida, name_variable, acoplament_function):
         self.rdda_entrada = rdda_entrada
         self.rdda_salida = rdda_salida

@@ -22,7 +22,7 @@ oRedRddasModel = RedRddasModel(n_of_rddas, n_of_variables_rdda, n_of_signals_rdd
                                n_clauses_function)
 # generate the RDDAs
 # print("generating the rddas ...")
-oRedRddasModel.generate_rddas()
+oRedRddasModel.generate_local_networks()
 
 # calculate the Attractors Field
 l_of_attractors_field = RedRddasModel.calculate_attractors_fields(oRedRddasModel)

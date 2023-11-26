@@ -42,7 +42,7 @@ for n_of_rdds in range(n_rddas_min, n_rddas_max + 1):
 
     # Generate the RDDs
     print("generating the rdds ...")
-    oRedRddasModel.generate_rddas(type_network=type_network)
+    oRedRddasModel.generate_local_networks(type_network=type_network)
 
     # # Save the Network of RDDAs in a Pickle file
     # RedRddasModel.save_file_pickle(oRedRddasModel, path)
