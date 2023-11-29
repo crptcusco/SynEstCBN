@@ -27,7 +27,7 @@ oRedRddasModel.generate_local_networks(type_network=type_network)
 
 
 # Calculate the Attractors by RDDA and by Signal
-oRedRddasModel  = RedRddasModel.find_attractors_rddas(oRedRddasModel)
+oRedRddasModel  = RedRddasModel.find_local_nets_attractors(oRedRddasModel)
 
 
 # Save the Network of RDDAs in a Pickle file

@@ -1,5 +1,5 @@
-from satispy import Variable        # Library to resolve SAT
-from satispy.solver import Minisat  # Library to resolve SAT
+from satispy import Variable        # Library to generate Boolean variables
+from satispy.solver import Minisat  # Library to resolve SAT formulations
 import ray                          # Library to parallelization, distribution and scalability
 
 
@@ -58,10 +58,10 @@ class LocalNetwork:
 
     def generate_boolean_formulation(self, number_of_transitions, l_attractors_clauses, permutation):
         # create dictionary of cnf variables!!
-        for n_variable in self.l_var_total:
+        for i_variable in self.l_var_total:
             for transition_c in range(0, number_of_transitions):
-                self.d_var_cnf[str(n_variable) + "_" + str(transition_c)] = Variable(
-                    str(n_variable) + "_" + str(transition_c))
+                self.d_var_cnf[str(i_variable) + "_" + str(transition_c)] = Variable(
+                    str(i_variable) + "_" + str(transition_c))
 
         # transition_aux = 0
         cont_transition = 0
@@ -174,7 +174,7 @@ class LocalNetwork:
         return boolean_function
 
     @staticmethod
-    def count_state_repeat(self, state, path_solution):
+    def count_state_repeat(state, path_solution):
         # input type [[],[],...[]]
         number_of_times = 0
         for element in path_solution:
@@ -183,21 +183,21 @@ class LocalNetwork:
         return number_of_times
 
     @staticmethod
-    def generateBooleanFormulationSatispy(oRDD, number_of_transitions, l_atractors_clausules, l_signal_coupling):
+    def generate_boolean_formulation_satispy(o_local_network, n_transitions, l_attractors_clauses, l_coupling_signal):
         # create dictionary of cnf variables!!
-        for variable in oRDD.l_var_total:
-            for transition_c in range(0, number_of_transitions):
-                oRDD.d_var_cnf[str(variable) + "_" + str(transition_c)] = Variable(
-                    str(variable) + "_" + str(transition_c))
+        for o_variable in o_local_network.l_var_total:
+            for transition_c in range(0, n_transitions):
+                o_local_network.d_var_cnf[str(o_variable) + "_" + str(transition_c)] = Variable(
+                    str(o_variable) + "_" + str(transition_c))
 
         # transition_aux = 0
         cont_transition = 0
         boolean_function = Variable("0_0")
-        for transition in range(1, number_of_transitions):
+        for transition in range(1, n_transitions):
             # transition_aux = transition
             cont_clausula_global = 0
             boolean_expresion_equivalence = Variable("0_0")
-            for oVariableModel in oRDD.l_desc_vars:
+            for oVariableModel in o_local_network.l_desc_vars:
                 cont_clausula = 0
                 boolean_expresion_clausule_global = Variable("0_0")
                 for clausula in oVariableModel.cnf_function:
@@ -207,17 +207,17 @@ class LocalNetwork:
                         termino_aux = abs(int(termino))
                         if (cont_termino == 0):
                             if (str(termino)[0] != "-"):
-                                boolean_expresion_clausule = oRDD.d_var_cnf[
+                                boolean_expresion_clausule = o_local_network.d_var_cnf[
                                     str(termino_aux) + "_" + str(transition - 1)]
                             else:
-                                boolean_expresion_clausule = -oRDD.d_var_cnf[
+                                boolean_expresion_clausule = -o_local_network.d_var_cnf[
                                     str(termino_aux) + "_" + str(transition - 1)]
                         else:
                             if (str(termino)[0] != "-"):
-                                boolean_expresion_clausule = oRDD.d_var_cnf[str(termino_aux) + "_" + str(
+                                boolean_expresion_clausule = o_local_network.d_var_cnf[str(termino_aux) + "_" + str(
                                     transition - 1)] | boolean_expresion_clausule
                             else:
-                                boolean_expresion_clausule = -oRDD.d_var_cnf[
+                                boolean_expresion_clausule = -o_local_network.d_var_cnf[
                                     str(termino_aux) + "_" + str(transition - 1)] | boolean_expresion_clausule
                         cont_termino = cont_termino + 1
                     if (cont_clausula) == 0:
@@ -226,23 +226,23 @@ class LocalNetwork:
                         boolean_expresion_clausule_global = boolean_expresion_clausule_global & boolean_expresion_clausule
                     cont_clausula = cont_clausula + 1
                 if cont_clausula_global == 0:
-                    boolean_expresion_equivalence = oRDD.d_var_cnf[str(oVariableModel.index) + "_" + str(
+                    boolean_expresion_equivalence = o_local_network.d_var_cnf[str(oVariableModel.index) + "_" + str(
                         transition)] >> boolean_expresion_clausule_global
                     boolean_expresion_equivalence = boolean_expresion_equivalence & (
-                            boolean_expresion_clausule_global >> oRDD.d_var_cnf[
+                            boolean_expresion_clausule_global >> o_local_network.d_var_cnf[
                         str(oVariableModel.index) + "_" + str(transition)])
                 else:
-                    boolean_expresion_equivalence = boolean_expresion_equivalence & (oRDD.d_var_cnf[
+                    boolean_expresion_equivalence = boolean_expresion_equivalence & (o_local_network.d_var_cnf[
                                                                                          str(oVariableModel.index) + "_" + str(
                                                                                              transition)] >> boolean_expresion_clausule_global)
                     boolean_expresion_equivalence = boolean_expresion_equivalence & (
-                            boolean_expresion_clausule_global >> oRDD.d_var_cnf[
+                            boolean_expresion_clausule_global >> o_local_network.d_var_cnf[
                         str(oVariableModel.index) + "_" + str(transition)])
                 if (oVariableModel.cnf_function == []):
                     print("ENTRO CASO ATIPICO")
                     boolean_function = boolean_function & (
-                            oRDD.d_var_cnf[str(oVariableModel.index) + "_" + str(transition)] | -
-                    oRDD.d_var_cnf[str(oVariableModel.index) + "_" + str(transition)])
+                            o_local_network.d_var_cnf[str(oVariableModel.index) + "_" + str(transition)] | -
+                    o_local_network.d_var_cnf[str(oVariableModel.index) + "_" + str(transition)])
                 cont_clausula_global = cont_clausula_global + 1
             if cont_transition == 0:
                 boolean_function = boolean_expresion_equivalence
@@ -252,24 +252,24 @@ class LocalNetwork:
             cont_transition = cont_transition + 1
 
         # ASSING VALUES FOR PERMUTATIONS
-        cont_permutacion = 0
-        for elemento in oRDD.l_var_exterm:
+        v_cont_permutacion = 0
+        for element in o_local_network.l_var_exterm:
             # print oRDD.list_of_v_exterm
-            for v_transition in range(0, number_of_transitions):
+            for v_transition in range(0, n_transitions):
                 # print l_signal_coupling[cont_permutacion]
-                if l_signal_coupling[cont_permutacion] == "0":
-                    boolean_function = boolean_function & -oRDD.d_var_cnf[str(elemento) + "_" + str(v_transition)]
+                if l_coupling_signal[v_cont_permutacion] == "0":
+                    boolean_function = boolean_function & -o_local_network.d_var_cnf[str(element) + "_" + str(v_transition)]
                     # print (str(elemento) +"_"+ str(v_transition))
                 else:
-                    boolean_function = boolean_function & oRDD.d_var_cnf[str(elemento) + "_" + str(v_transition)]
+                    boolean_function = boolean_function & o_local_network.d_var_cnf[str(element) + "_" + str(v_transition)]
                     # print (str(elemento) +"_"+ str(v_transition))
-            cont_permutacion = cont_permutacion + 1
+            v_cont_permutacion = v_cont_permutacion + 1
 
         # add atractors to boolean function
-        if (len(l_atractors_clausules) > 0):
+        if (len(l_attractors_clauses) > 0):
             boolean_function_of_atractors = Variable("0_0")
             cont_clausula = 0
-            for clausula in l_atractors_clausules:
+            for clausula in l_attractors_clauses:
                 boolean_expresion_clausule_of_atractors = Variable("0_0")
                 cont_termino = 0
                 for termino in clausula:
@@ -277,19 +277,19 @@ class LocalNetwork:
                     # print str(termino_aux) + "_" + str(number_of_transitions-1)
                     if (cont_termino == 0):
                         if (termino[0] != "-"):
-                            boolean_expresion_clausule_of_atractors = oRDD.d_var_cnf[
-                                str(termino_aux) + "_" + str(number_of_transitions - 1)]
+                            boolean_expresion_clausule_of_atractors = o_local_network.d_var_cnf[
+                                str(termino_aux) + "_" + str(n_transitions - 1)]
                         else:
-                            boolean_expresion_clausule_of_atractors = -oRDD.d_var_cnf[
-                                str(termino_aux) + "_" + str(number_of_transitions - 1)]
+                            boolean_expresion_clausule_of_atractors = -o_local_network.d_var_cnf[
+                                str(termino_aux) + "_" + str(n_transitions - 1)]
                     else:
                         if (termino[0] != "-"):
                             boolean_expresion_clausule_of_atractors = boolean_expresion_clausule_of_atractors & \
-                                                                      oRDD.d_var_cnf[str(termino_aux) + "_" + str(
-                                                                          number_of_transitions - 1)]
+                                                                      o_local_network.d_var_cnf[str(termino_aux) + "_" + str(
+                                                                          n_transitions - 1)]
                         else:
                             boolean_expresion_clausule_of_atractors = boolean_expresion_clausule_of_atractors & - \
-                                oRDD.d_var_cnf[str(termino_aux) + "_" + str(number_of_transitions - 1)]
+                                o_local_network.d_var_cnf[str(termino_aux) + "_" + str(n_transitions - 1)]
                     cont_termino = cont_termino + 1
                 if (cont_clausula) == 0:
                     boolean_function_of_atractors = -boolean_expresion_clausule_of_atractors
@@ -299,56 +299,56 @@ class LocalNetwork:
             boolean_function = boolean_function & boolean_function_of_atractors
 
         # Add all the variables of the position 0 to the booblean function
-        for variable in oRDD.l_var_total:
+        for o_variable in o_local_network.l_var_total:
             boolean_function = boolean_function & (
-                    oRDD.d_var_cnf[str(variable) + "_0"] | - oRDD.d_var_cnf[str(variable) + "_0"])
+                    o_local_network.d_var_cnf[str(o_variable) + "_0"] | - o_local_network.d_var_cnf[str(o_variable) + "_0"])
         # print(boolean_function)
         return boolean_function
 
-    def findLocalAtractorsSATSatispy(oRDD, l_signal_coupling):
-        def countStateRepeat(v_estate, path_solution):
+    def find_local_attractors_sat_satispy(self, l_signal_coupling):
+        def count_state_repeat(o_state_analyzed, l_states_path):
             # input type [[],[],...[]]
             number_of_times = 0
-            for v_element in path_solution:
-                if v_element == v_estate:
+            for o_state_in_path in l_states_path:
+                if o_state_in_path == o_state_analyzed:
                     number_of_times = number_of_times + 1
             return number_of_times
 
         # print "BEGIN TO FIND ATTRACTORS"
-        print("NETWORK NUMBER : " + str(oRDD.index) + " PERMUTATION SIGNAL COUPLING: " + l_signal_coupling)
+        print("NETWORK NUMBER : " + str(self.index) + " PERMUTATION SIGNAL COUPLING: " + l_signal_coupling)
         # create boolean expression initial with "n" transitions
-        oRDD.set_of_attractors = []
+        self.set_of_attractors = []
         v_num_transitions = 3
-        l_atractors = []
-        l_atractors_clausules = []
+        l_attractors = []
+        l_attractors_clauses = []
 
         # REPEAT CODE
-        v_bool_function = oRDD.generateBooleanFormulationSatispy(oRDD, v_num_transitions, l_atractors_clausules,
-                                                                 l_signal_coupling)
-        m_respuesta_sat = []
+        v_bool_function = self.generate_boolean_formulation_satispy(self, v_num_transitions, l_attractors_clauses,
+                                                                    l_signal_coupling)
+        m_sat_response = []
         o_solver = Minisat()
         o_solution = o_solver.solve(v_bool_function)
 
         # print(oRDD.number_of_v_total)
         if o_solution.success:
             for j in range(0, v_num_transitions):
-                m_respuesta_sat.append([])
-                for i in oRDD.l_var_total:
+                m_sat_response.append([])
+                for i in self.l_var_total:
                     # print("_________________________________________")
                     # print("Variable de Erro:", f"{i}_{j}")
                     # print(v_bool_function)
-                    m_respuesta_sat[j].append(o_solution[oRDD.d_var_cnf[f'{i}_{j}']])
+                    m_sat_response[j].append(o_solution[self.d_var_cnf[f'{i}_{j}']])
         else:
             print("The expression cannot be satisfied")
 
-        # BLOCK ATRACTORS
+        # BLOCK ATTRACTORS
         m_auxliar_sat = []
-        if (len(m_respuesta_sat) != 0):
+        if (len(m_sat_response) != 0):
             # TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
             for j in range(0, v_num_transitions):
                 matriz_aux_sat = []
-                for i in range(0, oRDD.n_var_total):
-                    if m_respuesta_sat[j][i] == True:
+                for i in range(0, self.n_var_total):
+                    if m_sat_response[j][i] == True:
                         matriz_aux_sat.append("1")
                     else:
                         matriz_aux_sat.append("0")
@@ -370,14 +370,14 @@ class LocalNetwork:
             l_news_estates_atractor = []
             # check atractors
             for v_state in path_solution:
-                v_state_count = countStateRepeat(v_state, path_solution)
+                v_state_count = count_state_repeat(v_state, path_solution)
                 if (v_state_count > 1):
                     atractor_begin = path_solution.index(v_state) + 1
                     atractor_end = path_solution[atractor_begin:].index(v_state)
                     l_news_estates_atractor = path_solution[atractor_begin - 1:(atractor_begin + atractor_end)]
-                    l_atractors = l_atractors + l_news_estates_atractor
+                    l_attractors = l_attractors + l_news_estates_atractor
                     # add atractors like list of list
-                    oRDD.set_of_attractors.append(l_news_estates_atractor)
+                    self.set_of_attractors.append(l_news_estates_atractor)
                     break
 
             # print oRDD.set_of_attractors
@@ -386,42 +386,42 @@ class LocalNetwork:
                 v_num_transitions = v_num_transitions * 2
 
             # TRANFORM LIST OF ATRACTORS TO CLAUSULES
-            for clausule_atractor in l_atractors:
+            for clausule_atractor in l_attractors:
                 clausule_variable = []
                 cont_variable = 0
                 for estate_atractor in clausule_atractor:
                     if (estate_atractor == "0"):
-                        clausule_variable.append("-" + str(oRDD.l_var_total[cont_variable]))
+                        clausule_variable.append("-" + str(self.l_var_total[cont_variable]))
                     else:
-                        clausule_variable.append(str(oRDD.l_var_total[cont_variable]))
+                        clausule_variable.append(str(self.l_var_total[cont_variable]))
                     cont_variable = cont_variable + 1
-                l_atractors_clausules.append(clausule_variable)
+                l_attractors_clauses.append(clausule_variable)
 
             # print l_atractors_clausules
             # REPEAT CODE
-            v_bool_function = oRDD.generateBooleanFormulationSatispy(oRDD, v_num_transitions, l_atractors_clausules,
-                                                                     l_signal_coupling)
-            m_respuesta_sat = []
+            v_bool_function = self.generate_boolean_formulation_satispy(self, v_num_transitions, l_attractors_clauses,
+                                                                        l_signal_coupling)
+            m_sat_response = []
             o_solver = Minisat()
             o_solution = o_solver.solve(v_bool_function)
 
             if o_solution.success:
                 for j in range(0, v_num_transitions):
-                    m_respuesta_sat.append([])
-                    for i in oRDD.l_var_total:
-                        m_respuesta_sat[j].append(o_solution[oRDD.d_var_cnf[f'{i}_{j}']])
+                    m_sat_response.append([])
+                    for i in self.l_var_total:
+                        m_sat_response[j].append(o_solution[self.d_var_cnf[f'{i}_{j}']])
             else:
                 # print(" ")
                 print("The expression cannot be satisfied")
 
             # BLOCK ATRACTORS
             m_auxliar_sat = []
-            if (len(m_respuesta_sat) != 0):
+            if (len(m_sat_response) != 0):
                 # TRANFORM BOOLEAN TO MATRIZ BOOLEAN RESPONSE
                 for j in range(0, v_num_transitions):
                     matriz_aux_sat = []
-                    for i in range(0, oRDD.n_var_total):
-                        if m_respuesta_sat[j][i] == True:
+                    for i in range(0, self.n_var_total):
+                        if m_sat_response[j][i] == True:
                             matriz_aux_sat.append("1")
                         else:
                             matriz_aux_sat.append("0")
@@ -434,7 +434,7 @@ class LocalNetwork:
         # print oRDD.set_of_attractors
         # print(" ")
         # print ("END OF FIND ATRACTORS")
-        return oRDD.set_of_attractors
+        return self.set_of_attractors
 
     @staticmethod
     @ray.remote
@@ -456,8 +456,8 @@ class LocalNetwork:
         l_atractors_clausules = []
 
         # REPEAT CODE
-        v_bool_function = oRDD.generateBooleanFormulationSatispy(oRDD, v_num_transitions, l_atractors_clausules,
-                                                                 l_signal_coupling)
+        v_bool_function = oRDD.generate_boolean_formulation_satispy(oRDD, v_num_transitions, l_atractors_clausules,
+                                                                    l_signal_coupling)
         m_respuesta_sat = []
         o_solver = Minisat()
         o_solution = o_solver.solve(v_bool_function)
@@ -534,8 +534,8 @@ class LocalNetwork:
 
             # print l_atractors_clausules
             # REPEAT CODE
-            v_bool_function = oRDD.generateBooleanFormulationSatispy(oRDD, v_num_transitions, l_atractors_clausules,
-                                                                     l_signal_coupling)
+            v_bool_function = oRDD.generate_boolean_formulation_satispy(oRDD, v_num_transitions, l_atractors_clausules,
+                                                                        l_signal_coupling)
             m_respuesta_sat = []
             o_solver = Minisat()
             o_solution = o_solver.solve(v_bool_function)

@@ -16,34 +16,23 @@ from classes.internalvariable import InternalVariable
 
 class CBN(object):
     def __init__(self, l_local_nets, generated=False):
-        # Generate attributes
-        # self.n_clauses_funct = None
-        # self.n_exit_variables = None
-        # self.n_signals_local_net = None
-        # self.n_internal_variables = None
-        # self.n_local_nets = None
-
         # Initial attributes
-        self.generated = generated
-        self.l_local_nets = l_local_nets  # List of the object of each RDD, the edges
+        self.generated = generated              # The CBN is generated?
+        self.l_local_nets = l_local_nets        # List of the object of each RDD, the edges
 
         # Generated attributes
-        self.l_local_net_perm_attractors = []  # List who join RDD - Permutation - Attractors
-        self.local_nets_attractors = []  # List of attractors in form of key, Without RDD
-        self.list_attractors_pairs = []  # List of attractors pairs in only one list without RDD
-        self.group_signals_pairs = []  # List of attractors pairs group by relations between RDDs
-        self.list_signal_pairs = []  # List of signal pairs group by relations,but without labels
-        self.d_global_local_nets_attractor = {}  # Dictionary for each attractor with his RDD
-        self.attractor_fields = []  # The List of attractor fields in format of pair attractors
+        self.l_local_net_perm_attractors = []   # List who join RDD - Permutation - Attractors
+        self.local_nets_attractors = []         # List of attractors in form of key, Without RDD
+        self.list_attractors_pairs = []         # List of attractors pairs in only one list without RDD
+        self.group_signals_pairs = []           # List of attractors pairs group by relations between RDDs
+        self.list_signal_pairs = []             # List of signal pairs group by relations,but without labels
+        self.d_global_local_nets_attractor = {} # Dictionary for each attractor with his RDD
+        self.attractor_fields = []              # The List of attractor fields in format of pair attractors
 
-        # Dictionary of RDD as key and Color as value
-        self.d_local_net_color = {}
-        # List of color for the graphics
-        self.local_net_color_dict = {}
-        l_colors = list(mco.CSS4_COLORS.keys())
-        random.shuffle(l_colors)
-        for i, color in enumerate(l_colors):
-            self.local_net_color_dict[i] = color
+
+        # self.d_local_net_color = {}           # Dictionary of local networks as key and color as value
+        self.d_local_nets_colors = {}           # List of color for the graphics
+        self.graph_generate_local_nets_colors() # Generate the colors for every local network
 
     # @staticmethod
     # def generate_cbn(n_local_nets, n_internal_variables, n_signals_local_net, n_exit_variables, n_clauses_funct, ):
@@ -58,9 +47,9 @@ class CBN(object):
 
     def show_description(self):
         print("COUPLED BOOLEAN NETWORK (CBN) DESCRIPTION")
-        print("===================================")
-        print("Number of Local Networks: " + str(self.n_local_nets))
-        print("Number of variables by Local Network: " + str(self.n_internal_variables))
+        print("=========================================")
+        print("Number of Local Networks:", self.get_n_local_nets())
+        print("Number of variables by Local Network:", self.get_n_internal_variables())
         print("Number of coupling signals by Local Network: " + str(self.n_signals_local_net))
         print("Maximum number of exit variables by signal: " + str(self.n_local_nets))
         print("Maximum number of clauses by function: " + str(self.n_local_nets))
@@ -116,6 +105,131 @@ class CBN(object):
 
     def show_attractor_fields(self):
         pass
+
+    # functions
+    @staticmethod
+    def generate_cbn_topology(n_nodes, v_topology=1):
+        # Generate a directed graph begin in 1
+        G = nx.DiGraph()
+        # classical topologies
+        # complete_graph
+        if v_topology == 1:
+            G = nx.complete_graph(n_nodes, nx.DiGraph())
+        # binomial_tree
+        elif v_topology == 2:
+            G = nx.binomial_tree(n_nodes, nx.DiGraph())
+        # cycle_graph
+        elif v_topology == 3:
+            G = nx.cycle_graph(n_nodes, nx.DiGraph())
+        # path_graph
+        elif v_topology == 4:
+            G = nx.path_graph(n_nodes, nx.DiGraph())
+        # aleatory topologies
+        # gn_graph
+        elif v_topology == 5:
+            G = nx.gn_graph(n_nodes)
+        elif v_topology == 6:
+            G = nx.gnc_graph(n_nodes)
+        # linear_graph
+        elif v_topology == 7:
+            G = nx.DiGraph()
+            G.add_nodes_from(range(1, n_nodes + 1))
+            for i in range(1, n_nodes):
+                G.add_edge(i, i + 1)
+        else:
+            G = nx.complete_graph(n_nodes, nx.DiGraph())
+
+        # Renaming the label of the nodes for beginning in 1
+        mapping = {node: node + 1 for node in G.nodes()}
+        G = nx.relabel_nodes(G, mapping)
+        return list(G.edges)
+
+    @staticmethod
+    def generate_cbn(n_local_networks, n_var_network, v_topology, n_output_variables, n_clauses_function):
+        print("MESSAGE:", "Generating the CBN")
+        print("==============================")
+        # GENERATE THE LOCAL NETWORKS IN BASIC FORM (WITHOUT RELATIONS AND DYNAMIC)
+        l_local_networks = []
+        # l_directed_edges = []
+
+        # generate the local networks
+        v_cont_nets = 1
+        for v_num_network in range(1, n_local_networks + 1):
+            # generate the variables of the networks
+            l_var_intern = list(range(v_cont_nets, v_cont_nets + n_var_network))
+            o_local_network = LocalNetwork(v_num_network, l_var_intern)
+            l_local_networks.append(o_local_network)
+            v_cont_nets = v_cont_nets + n_var_network
+
+        # generate the topology
+        l_relations = CBN.generate_cbn_topology(len(l_local_networks), v_topology)
+        aux1_l_local_networks = []
+        for o_local_network in l_local_networks:
+            l_local_networks_co = []
+            for t_relation in l_relations:
+                if t_relation[1] == o_local_network.index:
+                    o_local_network_aux = next(filter(lambda x: x.index == t_relation[0], l_local_networks), None)
+                    l_local_networks_co.append(o_local_network_aux)
+
+            for o_local_network_co in l_local_networks_co:
+                l_output_variables = random.sample(o_local_network_co.l_var_intern, n_output_variables)
+                if n_output_variables == 1:
+                    coupling_function = l_output_variables[0]
+                else:
+                    coupling_function = " " + " ∨ ".join(list(map(str, l_output_variables))) + " "
+                o_directed_edge = DirectedEdge(v_cont_nets, o_local_network.index, o_local_network_co.index,
+                                               l_output_variables, coupling_function)
+                l_directed_edges.append(o_directed_edge)
+                v_cont_nets = v_cont_nets + 1
+            aux1_l_local_networks.append(o_local_network)
+        l_local_networks = aux1_l_local_networks.copy()
+
+        # Process the input and output signals for local_network
+        for o_local_network in l_local_networks:
+            l_input_signals = DirectedEdge.find_input_edges_by_network_index(o_local_network.index, l_directed_edges)
+            o_local_network.process_input_signals(l_input_signals)
+
+        # GENERATE THE DYNAMICS OF EACH RDD
+        number_max_of_clauses = n_clauses_function
+        number_max_of_literals = 3
+        # we generate an auxiliary list to add the coupling signals
+        aux2_l_local_networks = []
+        for o_local_network in l_local_networks:
+            # Create a list of all RDDAs variables
+            l_aux_variables = []
+            # Add the variables of the coupling signals
+            l_input_signals = DirectedEdge.find_input_edges_by_network_index(o_local_network.index, l_directed_edges)
+            for o_signal in l_input_signals:
+                l_aux_variables.append(o_signal.index_variable)
+            # add local variables
+            l_aux_variables.extend(o_local_network.l_var_intern)
+
+            # generate the function description of the variables
+            des_funct_variables = []
+            # generate clauses
+            for i_local_variable in o_local_network.l_var_intern:
+                l_clauses_node = []
+                for v_clause in range(0, randint(1, number_max_of_clauses)):
+                    v_num_variable = randint(1, number_max_of_literals)
+                    # randomly select from the signal variables
+                    l_literals_variables = random.sample(l_aux_variables, v_num_variable)
+                    l_clauses_node.append(l_literals_variables)
+                # adding the description of variable in form of object
+                o_variable_model = InternalVariable(i_local_variable, l_clauses_node)
+                des_funct_variables.append(o_variable_model)
+                # adding the description in functions of every variable
+            # adding the local network to list of local networks
+            o_local_network.des_funct_variables = des_funct_variables.copy()
+            aux2_l_local_networks.append(o_local_network)
+            print("MESSAGE:", "Local network created :", o_local_network.index)
+            print("---------------------")
+            # actualized the list of local networks
+        l_local_networks = aux2_l_local_networks.copy()
+
+        print("MESSAGE:", "CBN generated")
+        o_cbn = CBN(l_local_networks, l_directed_edges)
+        print("=================================")
+        return o_cbn
 
     def generate_local_networks(self):
         if not self.generated:
@@ -202,8 +316,8 @@ class CBN(object):
             # actualized the list of rddas
         self.l_local_nets = aux2_lista_of_rddas.copy()
 
-        for rdda in self.l_local_nets:
-            rdda.process_parameters()
+        for o_local_network in self.l_local_nets:
+            o_local_network.process_parameters()
             # print("RDDA CREATED")
 
     def create_local_networks(self):
@@ -239,12 +353,20 @@ class CBN(object):
             data = pickle.load(f)
             return data
 
-    # Graph the topology of the RDDA using Networkx library
+
+    def graph_generate_local_nets_colors(self):
+        # generate a list of colors for the local networks
+        l_colors = list(mco.CSS4_COLORS.keys())
+        random.shuffle(l_colors)
+        for i, color in enumerate(l_colors):
+            self.d_local_nets_colors[i] = color
+
+    # Graph the topology of the CBN using Networkx library
     def graph_topology_networkx(self, save_graph: bool = False, show_graph: bool = False, path_graph=""):
         # Using the Networkx Library
         o_graph = nx.DiGraph()
-        for oRDDA in self.l_local_nets:
-            for oSignal in oRDDA.l_signals:
+        for o_local_network in self.l_local_nets:
+            for oSignal in o_local_network.l_signals:
                 # oSignal.show()
                 o_graph.add_edge(oSignal.rdda_entrada, oSignal.rdda_salida)
 
@@ -280,20 +402,20 @@ class CBN(object):
         if show_graph:
             plt.show()
 
-    # Graph the topology of the RDDA using igraph library
+    # Graph the topology of the CBN using igraph library
     def graph_topology_igraph(self, save_graph: bool = False, show_graph: bool = False, path_graph=""):
         # Using the Igraph Library
         # import igraph as ig
         # import matplotlib.pyplot as plt
         # path_graph = "oso2.eps"
 
-        print("Show the Topology Graph of the RDDA")
-        # Show the Topology of the RDDA
+        # Show the Topology of the CBN
+        print("Show the Topology Graph of the CBN")
         o_graph = ig.Graph(directed=True)
         o_graph.as_directed()
 
         # fill the vertices
-        o_graph.add_vertices(list(range(0, self.n_local_nets)))
+        o_graph.add_vertices(list(range(0, self.get_n_local_nets() len(self.l_local_nets))))
 
         # fill the edges
         list_edges = []
@@ -315,7 +437,7 @@ class CBN(object):
         # o_graph.vs["rdd"] = list_rdda_by_attractor
 
         # fill the dictionary rdd - color
-        o_graph.vs["color"] = [self.local_net_color_dict[rdd] for rdd in o_graph.vs["rdd"]]
+        o_graph.vs["color"] = [self.d_local_nets_colors[rdd] for rdd in o_graph.vs["rdd"]]
         # o_graph.vs["color"] = [color_dict[gender] for gender in g.vs["gender"]]
 
         # Show the Graph
@@ -371,7 +493,7 @@ class CBN(object):
             list_rdda_by_attractor.append(v_value[0])
         o_graph.vs["rdd"] = list_rdda_by_attractor
         # fill the dictionary rdd - color
-        o_graph.vs["color"] = [self.local_net_color_dict[rdd] for rdd in o_graph.vs["rdd"]]
+        o_graph.vs["color"] = [self.d_local_nets_colors[rdd] for rdd in o_graph.vs["rdd"]]
         # o_graph.vs["color"] = [color_dict[gender] for gender in g.vs["gender"]]
 
         # Show the Graph
@@ -446,7 +568,7 @@ class CBN(object):
             # Add the labels
             o_graph.vs["attractor"] = unique_attractors
             # fill the dictionary rdd - color
-            o_graph.vs["color"] = [self.local_net_color_dict[rdd] for rdd in o_graph.vs["rdd"]]
+            o_graph.vs["color"] = [self.d_local_nets_colors[rdd] for rdd in o_graph.vs["rdd"]]
             # o_graph.vs["color"] = [color_dict[gender] for gender in g.vs["gender"]]
 
             # Show the Graph
@@ -470,24 +592,23 @@ class CBN(object):
             #     plt.savefig(path_graph)
 
     @staticmethod
-    def find_attractors_rddas(oRedRddasModel):
+    def find_local_nets_attractors(o_cbn):
         print("BEGIN CALCULATE ALL LOCAL ATTRACTORS BY PERMUTATION")
         # CREATE A LIST OF: NETWORKS, PERMUTATION AND ATTRACTORS
 
-        # FIND THE ATTRACTORS FOR EACH RDDA
-        for oRdda in oRedRddasModel.l_local_nets:
+        # FIND THE ATTRACTORS FOR EACH LOCAL NETWORK
+        for o_local_network in o_cbn.l_local_nets:
             # GENERATE THE POSSIBLES COMBINATIONS ACCORDING TO THE COUPLING SIGNALS
-            l_permutation = product(list('01'), repeat=len(oRdda.l_signals))
+            l_permutation = product(list('01'), repeat=len(o_local_network.l_signals))
             for v_permutation in l_permutation:
                 # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
-                # EST [RDDA Object, permutation,[List of attractors]]
-                oRedRddasModel.l_local_net_perm_attractors.append([oRdda, ''.join(v_permutation),
-                                                                   LocalNetwork.findLocalAtractorsSATSatispy(oRdda,
-                                                                                                            ''.join(
-                                                                                                                v_permutation))])
+                # EST [Local Network object, permutation,[List of attractors]]
+                l_attractors = LocalNetwork.find_local_attractors_sat_satispy(o_local_network, ''.join(v_permutation))
+                o_cbn.l_local_net_perm_attractors.append([o_local_network, ''.join(v_permutation), l_attractors])
+
         print("END CALCULATE ALL LOCAL ATTRACTORS")
         print("######################################################")
-        return oRedRddasModel
+        return o_cbn
 
     @staticmethod
     @ray.remote
@@ -502,8 +623,8 @@ class CBN(object):
             for v_permutation in l_permutation:
                 # ADD NETWORK, PERMUTATION AND LIST OF ATTRACTORS TO LIST OF ALL ATTRACTORS BY NETWORK
                 # EST [RDDA Object, permutation,[List of attractors]]
-                result = LocalNetwork.findLocalAtractorsSATSatispy_ray.remote(oRdda, ''.join(v_permutation))
-                oRedRddasModel.l_local_net_perm_attractors.append([oRdda, ''.join(v_permutation), ray.get(result)])
+                l_attractors = LocalNetwork.findLocalAtractorsSATSatispy_ray.remote(oRdda, ''.join(v_permutation))
+                oRedRddasModel.l_local_net_perm_attractors.append([oRdda, ''.join(v_permutation), ray.get(l_attractors)])
         print("END CALCULATE ALL LOCAL ATTRACTORS")
         print("######################################################")
         return oRedRddasModel
@@ -1523,4 +1644,8 @@ class CBN(object):
         return df_exec_method
 
     def show(self):
+        pass
+
+    def get_n_local_nets(self):
+
         pass

@@ -9,7 +9,7 @@ print("EXAMPLE OF A CBN WITH 4 MANUAL LOCAL NETWORKS")
 
 # Initial Parameters
 n_local_nets = 4
-indexs = [1, 2, 3, 4]
+indexes = [1, 2, 3, 4]
 d_variables = {1: (1, 2, 3),
                2: (4, 5, 6, 7),
                3: (8, 9, 10),
@@ -41,7 +41,7 @@ d_description_variables = {1: {1: [[2, 3], [1, -15]],
 print("---------------------")
 print("Creating the networks")
 l_local_nets = []
-for index in indexs:
+for index in indexes:
     # generate the Boolean Networks
     o_local_network = LocalNetwork(index, d_variables[index])
     l_local_nets.append(o_local_network)
@@ -83,12 +83,12 @@ for o_network in o_cbn.l_local_nets:
 # Show the cbn and his networks
 o_cbn.show_local_networks()
 
-# # find the attractors by local networks
-# print("------------------------")
-# print("List of Attractors")
-# print("------------------------")
-# o_cbn = CBN.find_attractors_rddas(o_cbn)
-#
+# find the attractors by local networks
+print("------------------------")
+print("List of Attractors")
+print("------------------------")
+o_cbn = CBN.find_local_nets_attractors(o_cbn)
+
 # # Show the attractors of the RDDs by Signal
 # print("Show the List of attractors")
 # o_cbn.show_local_networks_attractors()
